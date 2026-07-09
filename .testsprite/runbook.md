@@ -11,23 +11,47 @@ Use this file during the verify/fix/verify phase. Do not treat it as proof by it
 Live app URL:
 
 ```text
-<LIVE_PUBLIC_URL>
+https://looplens-rho.vercel.app
 ```
 
 Do not run final hackathon verification only against localhost.
 
-## CLI Command Placeholder
+## CLI Setup
 
-Use the official TestSprite CLI flow after the app is deployed:
+Install and authenticate the official TestSprite CLI:
 
 ```text
-testsprite setup
-testsprite test create --type frontend --plan-from ./.testsprite/looplens-mvp.plan.json --run --wait --output json
+npm install -g @testsprite/testsprite-cli
+testsprite setup --agent codex
+testsprite auth status
 ```
 
-If the CLI requires authentication, keep credentials outside the repo.
+For non-interactive setup, keep credentials outside the repo:
 
-If a project ID is required, create or select the LoopLens project first, then include `--project <PROJECT_ID>`.
+```text
+TESTSPRITE_API_KEY="$TS_KEY" testsprite setup --from-env --yes --agent codex
+```
+
+Create or select the LoopLens frontend project, then replace `projectId` in `looplens-mvp.plan.json` with the returned project ID:
+
+```text
+testsprite project list --output json
+testsprite project create --type frontend --name "LoopLens" --url https://looplens-rho.vercel.app --output json
+```
+
+## CLI Run
+
+Dry-run the command shape before spending credits:
+
+```text
+testsprite --dry-run test create --plan-from ./.testsprite/looplens-mvp.plan.json --run --wait --output json
+```
+
+Run against the live deployed app:
+
+```text
+testsprite test create --plan-from ./.testsprite/looplens-mvp.plan.json --run --wait --timeout 900 --output json > .testsprite/latest-run.json
+```
 
 ## Flows To Verify
 

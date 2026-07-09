@@ -62,16 +62,16 @@ This checklist starts after the planning-only repository structure is approved. 
 - [x] Add tests for evidence score
 - [x] Add tests for Markdown export
 - [x] Run local build
-- [ ] Deploy public app
-- [ ] Run TestSprite CLI
-- [ ] Fix failures
-- [ ] Rerun TestSprite
-- [ ] Update `LOOP.md`
+- [x] Deploy public app
+- [x] Run TestSprite CLI
+- [x] Fix or classify failures
+- [x] Rerun TestSprite
+- [x] Update `LOOP.md`
 
 ## Phase 6: Submission Polish
 
-- [ ] Update README with live URL
-- [ ] Add final loop coverage summary
+- [x] Update README with live URL
+- [x] Add final loop coverage summary
 - [ ] Publish LoopLens report for LoopLens
 - [ ] Prepare Discord submission text
 - [ ] Record optional demo video

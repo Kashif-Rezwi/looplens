@@ -1,21 +1,145 @@
 {
+  "projectId": "4e162386-3ee6-4e2e-ab59-bf76171bd96c",
+  "type": "frontend",
   "name": "LoopLens MVP public proof flow",
-  "target": "<LIVE_PUBLIC_URL>",
-  "steps": [
-    "Open the LoopLens workspace.",
-    "Create a project report with project name, description, repository URL, live app URL, and TestSprite URL.",
-    "Paste a two-iteration LOOP.md sample with one failed/fixed iteration.",
-    "Parse the loop evidence and confirm editable timeline cards appear.",
-    "Switch to Judge Mode and Portfolio Mode.",
-    "Accept the redaction checklist and publish the report.",
-    "Open the public report URL in a fresh session.",
-    "Return to the workspace and verify Markdown export includes project links and timeline evidence."
-  ],
-  "assertions": [
-    "The parsed timeline preserves the original LOOP.md source text.",
-    "Judge Mode shows evidence completeness, loop count, and fixed failure count.",
-    "The public report opens without relying on local browser storage.",
-    "Markdown export includes repository URL, live URL, evidence links, and timeline entries.",
-    "No critical content overflows on mobile."
+  "planSteps": [
+    {
+      "description": "Open the live LoopLens workspace.",
+      "type": "action",
+      "action": "navigate",
+      "value": "https://looplens-rho.vercel.app"
+    },
+    {
+      "description": "Enter the project name.",
+      "type": "action",
+      "action": "fill",
+      "selector": "label:has-text('Project name') input",
+      "value": "TestSprite Proof"
+    },
+    {
+      "description": "Enter a short project description.",
+      "type": "action",
+      "action": "fill",
+      "selector": "label:has-text('Short description') textarea",
+      "value": "A TestSprite-verified LoopLens production report."
+    },
+    {
+      "description": "Enter the public repository URL.",
+      "type": "action",
+      "action": "fill",
+      "selector": "label:has-text('Repository URL') input",
+      "value": "https://github.com/kashif-rezwi/looplens"
+    },
+    {
+      "description": "Enter the live app URL.",
+      "type": "action",
+      "action": "fill",
+      "selector": "label:has-text('Live app URL') input",
+      "value": "https://looplens-rho.vercel.app"
+    },
+    {
+      "description": "Enter the TestSprite evidence URL.",
+      "type": "action",
+      "action": "fill",
+      "selector": "label:has-text('TestSprite URL') input",
+      "value": "https://www.testsprite.com/discover"
+    },
+    {
+      "description": "Paste a two-iteration LOOP.md sample with one failed and fixed iteration.",
+      "type": "action",
+      "action": "fill",
+      "selector": "textarea[placeholder*='YYYY-MM-DD']",
+      "value": "2026-07-09 | Iteration 1 | Built/changed: Created LoopLens report | Verified: Initial smoke test ran | Result: failed because publish warning needed review | Fixed: Accepted redaction checklist | Next: publish\n2026-07-09 | Iteration 2 | Built/changed: Published report | Verified: Public report opened | Result: verified | Next: export markdown"
+    },
+    {
+      "description": "Parse the pasted LOOP.md evidence.",
+      "type": "action",
+      "action": "click",
+      "selector": "button:has-text('Parse evidence')"
+    },
+    {
+      "description": "Confirm parsed evidence appears in editable fields.",
+      "type": "assertion",
+      "selector": "textarea",
+      "condition": "contains",
+      "value": "Created LoopLens report"
+    },
+    {
+      "description": "Switch to Judge Mode.",
+      "type": "action",
+      "action": "click",
+      "selector": "button:has-text('Judge')"
+    },
+    {
+      "description": "Confirm Judge Mode summarizes two recorded iterations.",
+      "type": "assertion",
+      "selector": "body",
+      "condition": "contains",
+      "value": "TestSprite Proof includes 2 recorded engineering iterations"
+    },
+    {
+      "description": "Switch to Portfolio Mode.",
+      "type": "action",
+      "action": "click",
+      "selector": "button:has-text('Portfolio')"
+    },
+    {
+      "description": "Confirm Portfolio Mode describes testing improvements.",
+      "type": "assertion",
+      "selector": "body",
+      "condition": "contains",
+      "value": "Testing improved the project"
+    },
+    {
+      "description": "Switch to Markdown export mode.",
+      "type": "action",
+      "action": "click",
+      "selector": "button:has-text('Markdown')"
+    },
+    {
+      "description": "Confirm Markdown export includes the report heading.",
+      "type": "assertion",
+      "selector": "textarea",
+      "condition": "contains",
+      "value": "# TestSprite Proof"
+    },
+    {
+      "description": "Accept the redaction checklist.",
+      "type": "action",
+      "action": "click",
+      "selector": "label:has-text('I reviewed this report') input[type='checkbox']"
+    },
+    {
+      "description": "Publish the report.",
+      "type": "action",
+      "action": "click",
+      "selector": "button:has-text('Publish report')"
+    },
+    {
+      "description": "Confirm a generated public report link appears without hard-coding the slug.",
+      "type": "assertion",
+      "selector": "a[href*='/report/']",
+      "condition": "visible"
+    },
+    {
+      "description": "Open the generated public report through the dynamic public report link.",
+      "type": "action",
+      "action": "click",
+      "selector": "a[href*='/report/']"
+    },
+    {
+      "description": "Confirm the public report URL is dynamic and the report title appears.",
+      "type": "assertion",
+      "selector": "body",
+      "condition": "contains",
+      "value": "TestSprite Proof"
+    },
+    {
+      "description": "Confirm the public report shows public/published status, iteration count, and iteration evidence.",
+      "type": "assertion",
+      "selector": "body",
+      "condition": "contains",
+      "value": "Public report"
+    }
   ]
 }
