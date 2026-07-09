@@ -8,7 +8,19 @@ This README is the public entry point for humans reviewing the repository. It sh
 
 ## Current Status
 
-The repository now contains a runnable local MVP.
+The repository now contains a deployed MVP.
+
+Live app:
+
+```text
+https://looplens-rho.vercel.app
+```
+
+Production publish smoke report:
+
+```text
+https://looplens-rho.vercel.app/report/looplens-production-publish-check-1783572396612-92016453
+```
 
 Implemented:
 
@@ -19,13 +31,12 @@ Implemented:
 - Evidence completeness score
 - Public report route
 - Postgres JSON persistence contract for published reports
+- Neon-backed production report storage
 - Development file-store fallback for local Playwright verification
 - Unit tests and Playwright smoke tests
 
 Pending before final hackathon submission:
 
-- Live deployment URL
-- Production `DATABASE_URL`
 - TestSprite CLI run against the live URL
 - Final public LoopLens report for LoopLens itself
 
@@ -79,7 +90,7 @@ Playwright starts the app locally and uses the development file-store fallback f
 
 ## Persistence
 
-Production publishing expects `DATABASE_URL` and stores published reports in one Postgres table:
+Production publishing expects `DATABASE_URL` and stores published reports in one Postgres table. The deployed app is configured with Neon Postgres for production.
 
 ```bash
 psql "$DATABASE_URL" -f scripts/schema.sql
