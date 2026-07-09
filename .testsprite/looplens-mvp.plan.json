@@ -1,6 +1,6 @@
 {
   "name": "LoopLens MVP public proof flow",
-  "target": "<LIVE_PUBLIC_URL>",
+  "target": "https://looplens-rho.vercel.app",
   "steps": [
     "Open the LoopLens workspace.",
     "Create a project report with project name, description, repository URL, live app URL, and TestSprite URL.",

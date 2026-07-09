@@ -11,7 +11,7 @@ Use this file during the verify/fix/verify phase. Do not treat it as proof by it
 Live app URL:
 
 ```text
-<LIVE_PUBLIC_URL>
+https://looplens-rho.vercel.app
 ```
 
 Do not run final hackathon verification only against localhost.
