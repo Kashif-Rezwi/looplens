@@ -12,11 +12,11 @@ The submission needs a public repo, live public URL, TestSprite CLI usage, `LOOP
 
 - [ ] Public GitHub repository
 - [x] Live public app URL
-- [ ] TestSprite CLI usage documented
-- [ ] `LOOP.md` written by the agent
-- [ ] README explains the app
+- [x] TestSprite CLI usage documented
+- [x] `LOOP.md` written by the agent
+- [x] README explains the app
 - [x] README includes live URL
-- [ ] README explains what the loop covered
+- [x] README explains what the loop covered
 - [ ] Discord post in `#hackathon-submissions`
 - [ ] Discord post includes live URL
 - [ ] Discord post includes repo link
@@ -36,9 +36,9 @@ The submission needs a public repo, live public URL, TestSprite CLI usage, `LOOP
 ## Final Review Questions
 
 - [ ] Can a judge understand LoopLens in under 30 seconds?
-- [ ] Can a judge see what was tested?
-- [ ] Can a judge see what failed and was fixed?
+- [x] Can a judge see what was tested?
+- [x] Can a judge see what failed and was fixed?
 - [x] Does the public report work without signing in?
 - [ ] Does the app work on mobile?
-- [ ] Does the repo show a real development loop?
+- [x] Does the repo show a real development loop?
 - [ ] Does the README make the hackathon fit obvious?

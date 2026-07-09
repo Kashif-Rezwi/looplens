@@ -37,8 +37,19 @@ Implemented:
 
 Pending before final hackathon submission:
 
-- TestSprite CLI run against the live URL
 - Final public LoopLens report for LoopLens itself
+
+## TestSprite Evidence
+
+TestSprite CLI was run against the live production app at `https://looplens-rho.vercel.app`.
+
+- TestSprite project: `4e162386-3ee6-4e2e-ab59-bf76171bd96c`
+- Test ID: `ee18a802-38ec-4575-b640-a13e6ebbadbb`
+- Initial run ID: `2cd79d30-6e30-4b53-a4a9-9b274d78d275`
+- Rerun ID: `3c5a4884-a2ad-46a5-903d-e918ef7b486f`
+- Dashboard: https://www.testsprite.com/dashboard/tests/4e162386-3ee6-4e2e-ab59-bf76171bd96c/test/ee18a802-38ec-4575-b640-a13e6ebbadbb
+
+The TestSprite verdict is `blocked`, but both the initial run and rerun summaries state that the LoopLens flow completed and the public report was verified. The rerun summary explicitly observed the public report URL, visible report title, `Published -> Yes`, evidence completeness, and `Iterations: 2`. The artifact is recorded as a TestSprite verdict/status issue rather than a LoopLens product failure.
 
 ## Product Context
 
