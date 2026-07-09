@@ -1,0 +1,2 @@
+- Iteration 1: Built: Created parser fixtures Verified: vitest passed Result: passed
+- Iteration 2: Built: Added publish warning Failed: API accepted missing redaction checklist Fixed: required redaction acceptance Status: fixed
