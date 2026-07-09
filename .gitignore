@@ -27,8 +27,8 @@ Thumbs.db
 coverage/
 test-results/
 playwright-report/
+*.tsbuildinfo
 
 # Local tool state
 .vercel/
 .turbo/
-
