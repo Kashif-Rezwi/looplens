@@ -21,47 +21,47 @@ This checklist starts after the planning-only repository structure is approved. 
 
 ## Phase 1: App Foundation
 
-- [ ] Set up framework and dependencies
-- [ ] Configure TypeScript
-- [ ] Configure styling
-- [ ] Add base layout
-- [ ] Add sample project data
-- [ ] Add initial responsive shell
+- [x] Set up framework and dependencies
+- [x] Configure TypeScript
+- [x] Configure styling
+- [x] Add base layout
+- [x] Add sample project data
+- [x] Add initial responsive shell
 
 ## Phase 2: Import and Parsing
 
-- [ ] Build project metadata form
-- [ ] Build `LOOP.md` paste importer
-- [ ] Implement parser
-- [ ] Preserve raw source text
-- [ ] Extract evidence URLs
-- [ ] Render parsed iteration cards
-- [ ] Allow iteration editing
+- [x] Build project metadata form
+- [x] Build `LOOP.md` paste importer
+- [x] Implement parser
+- [x] Preserve raw source text
+- [x] Extract evidence URLs
+- [x] Render parsed iteration cards
+- [x] Allow iteration editing
 
 ## Phase 3: Report Modes
 
-- [ ] Build Timeline View
-- [ ] Build Judge Mode
-- [ ] Build Portfolio Mode
-- [ ] Add evidence completeness score
-- [ ] Add deterministic summaries
-- [ ] Add Markdown export
+- [x] Build Timeline View
+- [x] Build Judge Mode
+- [x] Build Portfolio Mode
+- [x] Add evidence completeness score
+- [x] Add deterministic summaries
+- [x] Add Markdown export
 
 ## Phase 4: Public Sharing
 
-- [ ] Add persistence layer
-- [ ] Save project reports
-- [ ] Generate public slug or ID
-- [ ] Build public read-only report page
-- [ ] Add publish warning for sensitive content
-- [ ] Verify public URL works without local state
+- [x] Add persistence layer
+- [x] Save project reports
+- [x] Generate public slug or ID
+- [x] Build public read-only report page
+- [x] Add publish warning for sensitive content
+- [x] Verify public URL works without local state
 
 ## Phase 5: Verification
 
-- [ ] Add unit tests for parser
-- [ ] Add tests for evidence score
-- [ ] Add tests for Markdown export
-- [ ] Run local build
+- [x] Add unit tests for parser
+- [x] Add tests for evidence score
+- [x] Add tests for Markdown export
+- [x] Run local build
 - [ ] Deploy public app
 - [ ] Run TestSprite CLI
 - [ ] Fix failures
@@ -76,4 +76,3 @@ This checklist starts after the planning-only repository structure is approved. 
 - [ ] Prepare Discord submission text
 - [ ] Record optional demo video
 - [ ] Confirm repo is public
-

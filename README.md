@@ -8,16 +8,26 @@ This README is the public entry point for humans reviewing the repository. It sh
 
 ## Current Status
 
-The repository is in the planning and structure phase.
+The repository now contains a runnable local MVP.
 
-There is no application code yet. The current focus is:
+Implemented:
 
-- Product definition
-- MVP scope
-- Development organization
-- Agent instructions
-- Hackathon planning
-- TestSprite loop preparation
+- Next.js App Router workspace
+- `LOOP.md` paste/import and forgiving parser
+- Editable timeline cards
+- Timeline, Judge Mode, Portfolio Mode, and Markdown export
+- Evidence completeness score
+- Public report route
+- Postgres JSON persistence contract for published reports
+- Development file-store fallback for local Playwright verification
+- Unit tests and Playwright smoke tests
+
+Pending before final hackathon submission:
+
+- Live deployment URL
+- Production `DATABASE_URL`
+- TestSprite CLI run against the live URL
+- Final public LoopLens report for LoopLens itself
 
 ## Product Context
 
@@ -46,17 +56,48 @@ The hackathon MVP will let a user:
 - Publish a public report
 - Export the report as Markdown
 
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+Useful checks:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+```
+
+Playwright starts the app locally and uses the development file-store fallback for publish/share verification.
+
+## Persistence
+
+Production publishing expects `DATABASE_URL` and stores published reports in one Postgres table:
+
+```bash
+psql "$DATABASE_URL" -f scripts/schema.sql
+```
+
+Local development without `DATABASE_URL` writes temporary published reports to the OS temp directory. Public production reports must use Postgres.
+
 ## Repository Guide
 
 - [AGENT.md](./AGENT.md): Instructions for AI coding agents working on LoopLens.
 - [LOOP.md](./LOOP.md): Agent-written iteration log for the TestSprite hackathon loop.
 - [_doc/](./_doc): Product, MVP, architecture, testing, and submission planning.
-- [src/](./src): Future application source organization.
-- [tests/](./tests): Future E2E, fixture, and manual testing organization.
+- [src/](./src): Application source.
+- [tests/](./tests): Unit fixtures, parser tests, report logic tests, and Playwright E2E smoke tests.
 - [public/](./public): Future static assets.
 - [scripts/](./scripts): Future helper scripts.
 - [.testsprite/](./.testsprite): Future TestSprite configuration and notes.
-- [.github/](./.github): Future GitHub Actions and repository automation.
+- [.github/](./.github): GitHub Actions CI and future repository automation.
 
 ## Development Principle
 
@@ -75,3 +116,6 @@ Before submission, the repository should include:
 - Optional demo video
 - Optional GitHub Actions plus TestSprite CI evidence
 
+## Known Dependency Note
+
+`npm audit` currently reports a moderate PostCSS advisory through Next.js `16.2.10`'s nested dependency. `npm audit fix --force` suggests a breaking downgrade, so the project keeps the current Next version and records this as upstream dependency risk until a compatible Next release resolves it.

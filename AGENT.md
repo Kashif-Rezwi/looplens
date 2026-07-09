@@ -14,27 +14,19 @@ The project is being built for TestSprite Hackathon Season 3. The hackathon rewa
 
 ## Current Scope
 
-The current repository phase is planning and structure only. Do not add application code until the user explicitly starts the implementation phase.
+The repository is now in MVP implementation phase. Application code is allowed when it stays within the MVP boundaries below and preserves the evidence-first trust model.
 
-Allowed in this phase:
+Current implementation includes:
 
-- Documentation
-- Planning files
-- Folder structure
-- Checklists
-- Agent instructions
-- Non-executable placeholders
-
-Not allowed in this phase:
-
-- React components
-- Next.js routes
-- API handlers
-- Parser implementation
-- Styling implementation
-- Package setup
-- Database setup
-- Test automation code
+- Next.js App Router workspace
+- `LOOP.md` parser
+- Editable timeline cards
+- Timeline, Judge Mode, Portfolio Mode, and Markdown export
+- Evidence completeness score
+- Public report route
+- Postgres-backed published report storage for production
+- Development file-store fallback for local browser tests
+- Unit and Playwright smoke tests
 
 ## Product North Star
 
@@ -80,6 +72,7 @@ Use these files before changing scope:
 - `_doc/architecture.md`: Planned technical architecture and module boundaries.
 - `_doc/user-flow.md`: User journey, screens, states, and UX expectations.
 - `_doc/testing-strategy.md`: TestSprite and product verification plan.
+- `_doc/ai-summary-contract.md`: Future AI summary grounding contract.
 - `_doc/decisions.md`: Product and engineering decisions.
 - `_doc/checklists/development-checklist.md`: Build-phase checklist.
 - `_doc/checklists/submission-checklist.md`: Hackathon submission checklist.
@@ -163,4 +156,3 @@ The MVP is complete when:
 - At least one meaningful issue has been fixed and verified
 - `LOOP.md` documents the build loop
 - README contains live URL, repo context, and loop coverage
-

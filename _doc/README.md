@@ -32,8 +32,8 @@ When the product direction changes, update the relevant doc and add a note to `d
 - `architecture.md`: Planned technical architecture and module boundaries.
 - `user-flow.md`: Primary user journey and expected screen behavior.
 - `testing-strategy.md`: TestSprite, manual, and automated verification plan.
+- `ai-summary-contract.md`: Future AI summary input/output and grounding contract.
 - `decisions.md`: Product and engineering decisions made during development.
 - `checklists/development-checklist.md`: Build-phase checklist.
 - `checklists/submission-checklist.md`: Hackathon readiness checklist.
 - `research/`: Notes from external research or hackathon references.
-

@@ -18,13 +18,16 @@ Do not run final hackathon verification only against localhost.
 
 ## CLI Command Placeholder
 
-Fill in the exact command after TestSprite CLI setup is complete:
+Use the official TestSprite CLI flow after the app is deployed:
 
 ```text
-<TESTSPRITE_CLI_COMMAND> <LIVE_PUBLIC_URL>
+testsprite setup
+testsprite test create --type frontend --plan-from ./.testsprite/looplens-mvp.plan.json --run --wait --output json
 ```
 
 If the CLI requires authentication, keep credentials outside the repo.
+
+If a project ID is required, create or select the LoopLens project first, then include `--project <PROJECT_ID>`.
 
 ## Flows To Verify
 
@@ -78,4 +81,3 @@ Before submission, confirm:
 - `LOOP.md` records the verification loop
 - README explains what TestSprite covered
 - The public LoopLens report works without local browser state
-

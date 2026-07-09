@@ -1,6 +1,6 @@
 # GitHub Automation
 
-This directory is reserved for future repository automation.
+This directory contains repository automation.
 
 Planned use:
 
@@ -8,5 +8,4 @@ Planned use:
 - Optional TestSprite CI integration
 - Future issue or PR templates
 
-Do not add CI workflows until the app has runnable commands to execute.
-
+Current CI runs install, typecheck, unit tests, and production build.

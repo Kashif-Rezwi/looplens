@@ -27,6 +27,10 @@ The MVP uses:
 
 Public report pages must not depend on local storage.
 
+## Development Fallback
+
+When `DATABASE_URL` is absent outside production, published reports are written to the OS temp directory so Playwright can verify the full publish/share flow locally. Production must use Postgres.
+
 ## Usage Rule
 
 Keep request/response wiring thin. Business logic should live in server services here or in pure utilities under `src/lib`.
