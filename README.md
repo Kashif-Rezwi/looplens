@@ -8,19 +8,17 @@ This README is the public entry point for humans reviewing the repository. It sh
 
 ## Current Status
 
-The repository now contains a deployed MVP.
+LoopLens is deployed and ready for TestSprite Hackathon Season 3 submission.
 
-Live app:
-
-```text
-https://looplens-rho.vercel.app
-```
-
-Production publish smoke report:
+Core links:
 
 ```text
-https://looplens-rho.vercel.app/report/looplens-production-publish-check-1783572396612-92016453
+GitHub repo: https://github.com/Kashif-Rezwi/looplens
+Live app: https://looplens-rho.vercel.app
+Final LoopLens self-report: https://looplens-rho.vercel.app/report/looplens-687aa5cd
 ```
+
+The final self-report was published from the real [`LOOP.md`](./LOOP.md) and is the primary public proof artifact for the project. It shows 8 recorded engineering iterations, 5 fixed failures, production publish evidence, and the final TestSprite verification harness fix.
 
 Implemented:
 
@@ -35,9 +33,16 @@ Implemented:
 - Development file-store fallback for local Playwright verification
 - Unit tests and Playwright smoke tests
 
-Pending before final hackathon submission:
+## Production Proof Summary
 
-- Final public LoopLens report for LoopLens itself
+LoopLens was verified through a real build, test, fix, and verify loop:
+
+- Local unit and report-logic tests covered parsing, Markdown export, summaries, and scoring.
+- Playwright E2E covered sample report loading, create/parse/publish/open/export flow, and mobile overflow.
+- Production publishing was verified against the deployed Vercel app and Neon-backed public report storage.
+- TestSprite exercised the live public proof flow against `https://looplens-rho.vercel.app`.
+- A TestSprite generated-test brittleness issue was diagnosed as a verification harness problem, then fixed by replacing brittle slug/XPath assertions with deterministic Playwright assertions.
+- Final TestSprite replay passed cleanly: `16/16` steps passed, `0` failed.
 
 ## TestSprite Evidence
 
@@ -45,11 +50,11 @@ TestSprite CLI was run against the live production app at `https://looplens-rho.
 
 - TestSprite project: `4e162386-3ee6-4e2e-ab59-bf76171bd96c`
 - Test ID: `ee18a802-38ec-4575-b640-a13e6ebbadbb`
-- Initial run ID: `2cd79d30-6e30-4b53-a4a9-9b274d78d275`
-- Rerun ID: `3c5a4884-a2ad-46a5-903d-e918ef7b486f`
+- Final passed run ID: `2c84f4dc-d493-45ec-81fa-c52fb9870d45`
+- Final result: `16/16` steps passed, `0` failed
 - Dashboard: https://www.testsprite.com/dashboard/tests/4e162386-3ee6-4e2e-ab59-bf76171bd96c/test/ee18a802-38ec-4575-b640-a13e6ebbadbb
 
-The TestSprite verdict is `blocked`, but both the initial run and rerun summaries state that the LoopLens flow completed and the public report was verified. The rerun summary explicitly observed the public report URL, visible report title, `Published -> Yes`, evidence completeness, and `Iterations: 2`. The artifact is recorded as a TestSprite verdict/status issue rather than a LoopLens product failure.
+Earlier TestSprite runs were marked `blocked` even though the generated report was verified in the UI. Artifact review showed that the app was working and the issue came from brittle generated assertions, including hard-coded public report slugs and absolute XPath selectors. The final refined run used deterministic assertions and passed cleanly. Details are summarized in [.testsprite/latest-refined-run-summary.md](./.testsprite/latest-refined-run-summary.md).
 
 ## Product Context
 
@@ -64,9 +69,9 @@ LoopLens helps developers show:
 - What passed afterward
 - What evidence supports the work
 
-## Planned MVP
+## MVP
 
-The hackathon MVP will let a user:
+The hackathon MVP lets a user:
 
 - Create a project report
 - Add repo URL, live app URL, description, and optional evidence links
@@ -113,12 +118,13 @@ Local development without `DATABASE_URL` writes temporary published reports to t
 
 - [AGENT.md](./AGENT.md): Instructions for AI coding agents working on LoopLens.
 - [LOOP.md](./LOOP.md): Agent-written iteration log for the TestSprite hackathon loop.
+- [SUBMISSION.md](./SUBMISSION.md): Final hackathon submission package and ready-to-paste Discord text.
 - [_doc/](./_doc): Product, MVP, architecture, testing, and submission planning.
 - [src/](./src): Application source.
 - [tests/](./tests): Unit fixtures, parser tests, report logic tests, and Playwright E2E smoke tests.
 - [public/](./public): Future static assets.
 - [scripts/](./scripts): Future helper scripts.
-- [.testsprite/](./.testsprite): Future TestSprite configuration and notes.
+- [.testsprite/](./.testsprite): TestSprite plan files, run notes, and refined live-run summary.
 - [.github/](./.github): GitHub Actions CI and future repository automation.
 
 ## Development Principle
@@ -127,16 +133,16 @@ LoopLens should be built as a trustworthy engineering artifact, not a broad proj
 
 ## Hackathon Readiness
 
-Before submission, the repository should include:
+Submission package status:
 
-- Live public URL
-- Public GitHub repo
-- TestSprite CLI usage
-- Agent-written `LOOP.md`
-- README with app, live URL, and loop coverage
-- Public LoopLens report for LoopLens itself
-- Optional demo video
-- Optional GitHub Actions plus TestSprite CI evidence
+- Live public URL: complete
+- Public GitHub repo: complete
+- TestSprite CLI usage: complete
+- Agent-written `LOOP.md`: complete
+- README with app, live URL, loop coverage, and TestSprite evidence: complete
+- Public LoopLens report for LoopLens itself: complete
+- GitHub Actions CI workflow: included
+- Optional demo video: not included
 
 ## Known Dependency Note
 
