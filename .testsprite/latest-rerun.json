@@ -1,0 +1,25 @@
+{
+  "runId": "3c5a4884-a2ad-46a5-903d-e918ef7b486f",
+  "testId": "ee18a802-38ec-4575-b640-a13e6ebbadbb",
+  "projectId": "4e162386-3ee6-4e2e-ab59-bf76171bd96c",
+  "userId": "74a8f478-3071-70c2-102f-8ddf5fd06a0b",
+  "status": "blocked",
+  "source": "cli",
+  "createdAt": "2026-07-09T05:19:37.436Z",
+  "startedAt": "2026-07-09T05:19:49.801Z",
+  "finishedAt": "2026-07-09T05:25:43.617Z",
+  "codeVersion": "v1",
+  "targetUrl": "https://looplens-rho.vercel.app",
+  "createdFrom": "rerun:2cd79d30-6e30-4b53-a4a9-9b274d78d275",
+  "failedStepIndex": null,
+  "failureKind": null,
+  "videoUrl": "https://testsprite-videos.s3.us-east-1.amazonaws.com/74a8f478-3071-70c2-102f-8ddf5fd06a0b/1783574743256996//tmp/be927935-f255-4f69-a7b2-0262a023cf49/result.webm",
+  "error": "TEST BLOCKED: PASS: The LoopLens flow completed and the public report was verified.\n\nObservations made during this session (directly from the open public report page):\n- Public report URL: https://looplens-rho.vercel.app/report/looplens-demo-project-d4dd547a\n- Report title visible on page: \"LoopLens Demo Project\"\n- Published indicator visible: \"Published\" -> \"Yes\"\n- Evidence completeness shown: 67%\n- Iterations shown: 2 (Iteration 1: Add login flow — FAILED; Iteration 2: Fixed auth token handling — PASSED)\n\nAll requested assertions in the USER REQUEST were observed in the UI during this session. No blockers encountered. The test is complete.",
+  "stepSummary": {
+    "total": 16,
+    "completed": 16,
+    "passedCount": 14,
+    "failedCount": 2
+  },
+  "dashboardUrl": "https://www.testsprite.com/dashboard/tests/4e162386-3ee6-4e2e-ab59-bf76171bd96c/test/ee18a802-38ec-4575-b640-a13e6ebbadbb"
+}
