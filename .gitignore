@@ -33,3 +33,7 @@ playwright-report/
 .vercel/
 .turbo/
 .vercel
+
+# TestSprite CLI archive files
+.testsprite/runs/
+tmp/

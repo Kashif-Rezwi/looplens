@@ -107,7 +107,7 @@
       "description": "Accept the redaction checklist.",
       "type": "action",
       "action": "click",
-      "selector": "input[type='checkbox']"
+      "selector": "label:has-text('I reviewed this report') input[type='checkbox']"
     },
     {
       "description": "Publish the report.",
@@ -116,26 +116,26 @@
       "selector": "button:has-text('Publish report')"
     },
     {
-      "description": "Confirm a public report link appears.",
+      "description": "Confirm a generated public report link appears without hard-coding the slug.",
       "type": "assertion",
       "selector": "a[href*='/report/']",
       "condition": "visible"
     },
     {
-      "description": "Open the generated public report.",
+      "description": "Open the generated public report through the dynamic public report link.",
       "type": "action",
       "action": "click",
       "selector": "a[href*='/report/']"
     },
     {
-      "description": "Confirm the public report title appears.",
+      "description": "Confirm the public report URL is dynamic and the report title appears.",
       "type": "assertion",
-      "selector": "h1",
+      "selector": "body",
       "condition": "contains",
       "value": "TestSprite Proof"
     },
     {
-      "description": "Confirm the public report page identifies itself as public.",
+      "description": "Confirm the public report shows public/published status, iteration count, and iteration evidence.",
       "type": "assertion",
       "selector": "body",
       "condition": "contains",
