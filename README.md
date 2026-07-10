@@ -20,9 +20,13 @@ Live app: https://looplens-rho.vercel.app
 Final LoopLens self-report: https://looplens-rho.vercel.app/report/looplens-687aa5cd
 ```
 
-The final self-report was published from the real [`LOOP.md`](./LOOP.md) and is the primary public proof artifact for the project. It shows 8 recorded engineering iterations, 5 fixed failures, production publish evidence, and the final TestSprite verification harness fix.
+The final self-report was published from the real [`LOOP.md`](./LOOP.md) and is the primary public proof artifact for the project. It shows recorded engineering iterations, fixed-failure evidence, production publish evidence, and the final TestSprite verification harness fix.
 
 ## Screenshots
+
+### Self-Report Hero
+
+![LoopLens public self-report hero showing evidence completeness, iteration count, fixed failures, publish status, and proof chain](./public/screenshots/public-report.png)
 
 ### Workspace Timeline
 
@@ -31,10 +35,6 @@ The final self-report was published from the real [`LOOP.md`](./LOOP.md) and is 
 ### Judge Mode
 
 ![LoopLens Judge Mode summarizing iterations, fixed failures, and evidence completeness](./public/screenshots/judge-mode.png)
-
-### Public Report
-
-![LoopLens public report with evidence score, judge summary, portfolio summary, and timeline](./public/screenshots/public-report.png)
 
 Implemented:
 
