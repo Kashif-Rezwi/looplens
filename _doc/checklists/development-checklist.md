@@ -72,7 +72,7 @@ This checklist starts after the planning-only repository structure is approved. 
 
 - [x] Update README with live URL
 - [x] Add final loop coverage summary
-- [ ] Publish LoopLens report for LoopLens
-- [ ] Prepare Discord submission text
+- [x] Publish LoopLens report for LoopLens
+- [x] Prepare Discord submission text
 - [ ] Record optional demo video
-- [ ] Confirm repo is public
+- [x] Confirm repo is public

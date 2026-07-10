@@ -13,7 +13,7 @@
 - Project: LoopLens
 - Test: LoopLens MVP public proof flow
 - Test ID: `ee18a802-38ec-4575-b640-a13e6ebbadbb`
-- Final passed run ID: `2c84f4dc-d493-45ec-81fa-c52fb9870d45`
+- Final passed run ID: `a235ee61-9fd0-4449-b55d-f764457617ad`
 - Result: `16/16` steps passed against `https://looplens-rho.vercel.app`
 
 TestSprite verified the live create/parse/mode/export/publish/open-public-report flow. A previous blocked verdict was diagnosed as generated-test brittleness, not a LoopLens product defect; the final deterministic no-auto-heal replay passed cleanly.
@@ -41,7 +41,7 @@ GitHub repo: https://github.com/Kashif-Rezwi/looplens
 Final self-report: https://looplens-rho.vercel.app/report/looplens-687aa5cd
 TestSprite evidence: https://www.testsprite.com/dashboard/tests/4e162386-3ee6-4e2e-ab59-bf76171bd96c/test/ee18a802-38ec-4575-b640-a13e6ebbadbb
 
-TestSprite final run: 16/16 steps passed against the live production app. The loop also documents a verification harness fix: an earlier blocked verdict was caused by brittle generated assertions, not a LoopLens product defect, and the refined deterministic TestSprite run passed cleanly.
+TestSprite final run: 16/16 steps passed against the live production app. Latest run ID: a235ee61-9fd0-4449-b55d-f764457617ad. The loop also documents a verification harness fix: an earlier blocked verdict was caused by brittle generated assertions, not a LoopLens product defect, and the refined deterministic TestSprite run passed cleanly.
 ```
 
 ## Screenshot And Demo Notes

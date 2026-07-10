@@ -10,7 +10,7 @@ The submission needs a public repo, live public URL, TestSprite CLI usage, `LOOP
 
 ## Required Items
 
-- [ ] Public GitHub repository
+- [x] Public GitHub repository
 - [x] Live public app URL
 - [x] TestSprite CLI usage documented
 - [x] `LOOP.md` written by the agent
@@ -24,21 +24,21 @@ The submission needs a public repo, live public URL, TestSprite CLI usage, `LOOP
 
 ## Strongly Recommended Items
 
-- [ ] Public LoopLens report for LoopLens itself
-- [ ] GitHub Actions integration
+- [x] Public LoopLens report for LoopLens itself
+- [x] GitHub Actions integration
 - [ ] TestSprite CI evidence
 - [ ] Short demo video
 - [ ] Build-in-public social post
-- [ ] Screenshots for README
-- [ ] Final judge summary
-- [ ] Final portfolio summary
+- [x] Screenshots for README
+- [x] Final judge summary
+- [x] Final portfolio summary
 
 ## Final Review Questions
 
-- [ ] Can a judge understand LoopLens in under 30 seconds?
+- [x] Can a judge understand LoopLens in under 30 seconds?
 - [x] Can a judge see what was tested?
 - [x] Can a judge see what failed and was fixed?
 - [x] Does the public report work without signing in?
-- [ ] Does the app work on mobile?
+- [x] Does the app work on mobile?
 - [x] Does the repo show a real development loop?
-- [ ] Does the README make the hackathon fit obvious?
+- [x] Does the README make the hackathon fit obvious?
