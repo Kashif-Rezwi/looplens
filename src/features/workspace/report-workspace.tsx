@@ -32,19 +32,8 @@ interface ReportWorkspaceProps {
 const statusOptions: IterationStatus[] = ["unknown", "verified", "failed", "fixed", "blocked"];
 
 export function ReportWorkspace({ initialReport, storageKey }: ReportWorkspaceProps) {
-  const [report, setReport] = useState<ProjectReport>(() => {
-    if (typeof window === "undefined" || !storageKey) return initialReport;
-
-    const saved = window.localStorage.getItem(storageKey);
-    if (!saved) return initialReport;
-
-    try {
-      return hydrateReport(JSON.parse(saved) as ProjectReport);
-    } catch {
-      window.localStorage.removeItem(storageKey);
-      return initialReport;
-    }
-  });
+  const [report, setReport] = useState<ProjectReport>(initialReport);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [activeMode, setActiveMode] = useState<PreviewMode>("timeline");
   const [redactionAccepted, setRedactionAccepted] = useState(false);
   const loopTextareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -64,10 +53,26 @@ export function ReportWorkspace({ initialReport, storageKey }: ReportWorkspacePr
 
   const markdown = useMemo(() => exportReportMarkdown(report), [report]);
 
+  // Load from localStorage on mount
   useEffect(() => {
-    if (!storageKey) return;
+    if (storageKey) {
+      const saved = window.localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          setReport(hydrateReport(JSON.parse(saved) as ProjectReport));
+        } catch {
+          window.localStorage.removeItem(storageKey);
+        }
+      }
+    }
+    setHasLoaded(true);
+  }, [storageKey]);
+
+  // Save to localStorage when report changes
+  useEffect(() => {
+    if (!storageKey || !hasLoaded) return;
     window.localStorage.setItem(storageKey, JSON.stringify(report));
-  }, [report, storageKey]);
+  }, [report, storageKey, hasLoaded]);
 
   function updateReport(updates: Partial<ProjectReport>) {
     setReport((current) =>
