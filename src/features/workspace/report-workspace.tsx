@@ -31,6 +31,8 @@ interface ReportWorkspaceProps {
 
 const statusOptions: IterationStatus[] = ["unknown", "verified", "failed", "fixed", "blocked"];
 
+const accentClasses = ["border-l-[#FF8C69]", "border-l-[#9EFFBF]", "border-l-[#F4D35E]", "border-l-[#1A3C2B]"];
+
 export function ReportWorkspace({ initialReport, storageKey }: ReportWorkspaceProps) {
   const [report, setReport] = useState<ProjectReport>(initialReport);
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -53,22 +55,24 @@ export function ReportWorkspace({ initialReport, storageKey }: ReportWorkspacePr
 
   const markdown = useMemo(() => exportReportMarkdown(report), [report]);
 
-  // Load from localStorage on mount
   useEffect(() => {
-    if (storageKey) {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) {
-        try {
-          setReport(hydrateReport(JSON.parse(saved) as ProjectReport));
-        } catch {
-          window.localStorage.removeItem(storageKey);
+    const timeoutId = window.setTimeout(() => {
+      if (storageKey) {
+        const saved = window.localStorage.getItem(storageKey);
+        if (saved) {
+          try {
+            setReport(hydrateReport(JSON.parse(saved) as ProjectReport));
+          } catch {
+            window.localStorage.removeItem(storageKey);
+          }
         }
       }
-    }
-    setHasLoaded(true);
+      setHasLoaded(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [storageKey]);
 
-  // Save to localStorage when report changes
   useEffect(() => {
     if (!storageKey || !hasLoaded) return;
     window.localStorage.setItem(storageKey, JSON.stringify(report));
@@ -162,173 +166,289 @@ export function ReportWorkspace({ initialReport, storageKey }: ReportWorkspacePr
   }
 
   return (
-    <main className="mx-auto grid min-h-screen w-full max-w-7xl gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[420px_1fr] lg:px-8">
-      <section className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-5 lg:max-h-[calc(100vh-40px)] lg:overflow-y-auto">
-        <header className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-5 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-[var(--teal)]">LoopLens</p>
-              <h1 className="mt-1 text-2xl font-bold">Proof dashboard</h1>
-            </div>
-            <Link
-              className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[var(--line)] text-[var(--teal)]"
-              href="/sample"
-              title="Open sample"
-            >
-              <Sparkles size={18} />
-            </Link>
-          </div>
-        </header>
+    <div className="ll-page-shell min-h-screen text-[var(--ink)]">
+      <TechnicalHeader onPreviewMode={setActiveMode} />
 
-        <Panel title="Project">
-          <Field label="Project name" value={report.name} onChange={(value) => updateProjectField("name", value)} />
-          <Field
-            label="Short description"
-            value={report.description}
-            onChange={(value) => updateProjectField("description", value)}
-            textarea
-          />
-          <Field label="Repository URL" value={report.repoUrl} onChange={(value) => updateProjectField("repoUrl", value)} />
-          <Field label="Live app URL" value={report.liveUrl} onChange={(value) => updateProjectField("liveUrl", value)} />
-          <Field label="Demo URL" value={report.demoUrl} onChange={(value) => updateProjectField("demoUrl", value)} />
-          <Field label="CI URL" value={report.ciUrl} onChange={(value) => updateProjectField("ciUrl", value)} />
-          <Field
-            label="TestSprite URL"
-            value={report.testspriteUrl}
-            onChange={(value) => updateProjectField("testspriteUrl", value)}
-          />
-        </Panel>
-
-        <Panel title="LOOP.md">
-          <textarea
-            ref={loopTextareaRef}
-            className="focus-ring min-h-44 w-full resize-y rounded-[8px] border border-[var(--line)] bg-white px-3 py-2 text-sm leading-6"
-            value={report.loopRawText}
-            onChange={(event) => updateReport({ loopRawText: event.target.value })}
-            placeholder="YYYY-MM-DD | Iteration N | Built/changed: ... | Verified: ... | Result: ... | Next: ..."
-          />
-          <button
-            className="focus-ring inline-flex items-center justify-center gap-2 rounded-[8px] bg-[var(--teal)] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[var(--teal-dark)]"
-            type="button"
-            onClick={parseLoop}
-          >
-            <RefreshCw size={16} />
-            Parse evidence
-          </button>
-        </Panel>
-
-        <Panel title="Publish">
-          {sensitiveWarnings.length > 0 && (
-            <div className="rounded-[8px] border border-[#f3c17b] bg-[#fff8ed] p-3">
-              <div className="flex items-center gap-2 text-sm font-semibold text-[var(--amber)]">
-                <ShieldAlert size={16} />
-                Review warnings
-              </div>
-              <ul className="mt-2 grid gap-1 text-sm text-[var(--muted)]">
-                {sensitiveWarnings.map((warning) => (
-                  <li key={warning.label}>{warning.detail}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <label className="flex items-start gap-3 text-sm leading-6 text-[var(--muted)]">
-            <input
-              className="mt-1 h-4 w-4 accent-[var(--teal)]"
-              checked={redactionAccepted}
-              type="checkbox"
-              onChange={(event) => setRedactionAccepted(event.target.checked)}
-            />
-            <span>I reviewed this report for secrets, tokens, private URLs, customer data, internal notes, and sensitive logs.</span>
-          </label>
-          <button
-            className="focus-ring inline-flex items-center justify-center gap-2 rounded-[8px] bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-            type="button"
-            disabled={publishState.loading}
-            onClick={publish}
-          >
-            <Rocket size={16} />
-            {publishState.loading ? "Publishing" : "Publish report"}
-          </button>
-          {publishState.error && (
-            <p className="rounded-[8px] border border-[#f0b3c1] bg-[#fff1f4] p-3 text-sm text-[var(--rose)]">
-              {publishState.error}
+      <main className="mx-auto grid min-h-screen w-full max-w-7xl gap-5 px-4 pb-10 pt-24 sm:px-6 lg:grid-cols-[400px_minmax(0,1fr)] lg:px-8">
+        <section
+          id="workspace"
+          className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-112px)] lg:overflow-y-auto"
+        >
+          <header className="ll-surface p-5">
+            <StatusBadge label="Draft workspace" />
+            <h1 className="font-display mt-4 max-w-sm text-4xl font-bold leading-[0.95] tracking-normal text-[var(--forest)] sm:text-5xl">
+              Proof dashboard
+            </h1>
+            <p className="ll-muted-copy mt-4 border-l border-[var(--forest)] pl-3">
+              Turn project links and LOOP.md evidence into a judge-ready proof report.
             </p>
-          )}
-          {publishState.result && (
-            <a
-              className="focus-ring inline-flex min-w-0 items-center justify-between gap-3 rounded-[8px] border border-[var(--line)] px-3 py-2 text-sm text-[var(--teal)]"
-              href={publishState.result.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="truncate">{publishState.result.url}</span>
-              <ExternalLink size={14} />
-            </a>
-          )}
-        </Panel>
-      </section>
+            <WorkflowSteps />
+          </header>
 
-      <section className="min-w-0">
-        <div className="mb-4 grid gap-3 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-3 shadow-sm lg:grid-cols-[1fr_auto]">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <ModeButton active={activeMode === "timeline"} icon={<History size={16} />} label="Timeline" onClick={() => setActiveMode("timeline")} />
-            <ModeButton active={activeMode === "judge"} icon={<ShieldCheck size={16} />} label="Judge" onClick={() => setActiveMode("judge")} />
-            <ModeButton active={activeMode === "portfolio"} icon={<Save size={16} />} label="Portfolio" onClick={() => setActiveMode("portfolio")} />
-            <ModeButton active={activeMode === "markdown"} icon={<FileDown size={16} />} label="Markdown" onClick={() => setActiveMode("markdown")} />
-          </div>
-          <div className="grid grid-cols-3 gap-2 rounded-[8px] bg-[var(--panel-strong)] p-3 text-center text-sm">
-            <Metric label="Score" value={`${report.evidenceScore?.percentage ?? 0}%`} />
-            <Metric label="Loops" value={String(report.iterations.length)} />
-            <Metric label="Links" value={String(report.iterations.flatMap((iteration) => iteration.evidenceLinks).length)} />
-          </div>
-        </div>
-
-        {activeMode === "timeline" && (
-          <div className="grid gap-4">
-            <EvidenceScore report={report} />
-            <TimelineEditor report={report} onUpdateIteration={updateIteration} />
-          </div>
-        )}
-
-        {activeMode === "judge" && <ReportView report={report} />}
-
-        {activeMode === "portfolio" && (
-          <div className="grid gap-4">
-            <SummaryCard title="Portfolio Summary" content={report.summaries.find((summary) => summary.type === "portfolio")?.content} />
-            <SummaryCard title="Resume Bullets" content={report.summaries.find((summary) => summary.type === "resume")?.content} />
-            <SummaryCard title="Social Draft" content={report.summaries.find((summary) => summary.type === "social")?.content} />
-          </div>
-        )}
-
-        {activeMode === "markdown" && (
-          <div className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-4">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-xl font-semibold">Markdown Export</h2>
-              <button
-                className="focus-ring inline-flex items-center gap-2 rounded-[8px] border border-[var(--line)] px-3 py-2 text-sm font-semibold text-[var(--teal)]"
-                type="button"
-                onClick={copyMarkdown}
-              >
-                <Clipboard size={16} />
-                Copy
-              </button>
+          <Panel eyebrow="01" title="Project">
+            <div className="grid gap-3 border-b border-[var(--line)] pb-3">
+              <p className="ll-label text-[var(--forest)]">Required proof identity</p>
+              <Field
+                label="Project name"
+                value={report.name}
+                onChange={(value) => updateProjectField("name", value)}
+                placeholder="LoopLens"
+              />
+              <Field
+                label="Short description"
+                value={report.description}
+                onChange={(value) => updateProjectField("description", value)}
+                placeholder="What did you build, and why should a judge care?"
+                textarea
+              />
+              <Field
+                label="Repository URL"
+                value={report.repoUrl}
+                onChange={(value) => updateProjectField("repoUrl", value)}
+                placeholder="https://github.com/you/project"
+              />
+              <Field
+                label="Live app URL"
+                value={report.liveUrl}
+                onChange={(value) => updateProjectField("liveUrl", value)}
+                placeholder="https://your-app.vercel.app"
+              />
             </div>
+            <div className="grid gap-3">
+              <p className="ll-label text-[var(--forest)]">Optional evidence links</p>
+              <Field label="Demo URL" value={report.demoUrl} onChange={(value) => updateProjectField("demoUrl", value)} placeholder="Demo video or walkthrough" />
+              <Field label="CI URL" value={report.ciUrl} onChange={(value) => updateProjectField("ciUrl", value)} placeholder="Build, check, or CI run" />
+              <Field
+                label="TestSprite URL"
+                value={report.testspriteUrl}
+                onChange={(value) => updateProjectField("testspriteUrl", value)}
+                placeholder="TestSprite run or dashboard link"
+              />
+            </div>
+          </Panel>
+
+          <Panel eyebrow="02" title="LOOP.md">
+            <p className="ll-muted-copy">
+              Paste the build loop exactly as written. LoopLens keeps the raw source text so the public report can show its evidence trail.
+            </p>
             <textarea
-              className="focus-ring min-h-[520px] w-full resize-y rounded-[8px] border border-[var(--line)] bg-[#fbfcfa] p-3 font-mono text-sm leading-6"
-              readOnly
-              value={markdown}
+              ref={loopTextareaRef}
+              className="ll-input focus-ring min-h-40 resize-y font-mono"
+              value={report.loopRawText}
+              onChange={(event) => updateReport({ loopRawText: event.target.value })}
+              placeholder="YYYY-MM-DD | Iteration N | Built/changed: ... | Verified: ... | Result: ... | Next: ..."
             />
+            <button className="ll-button-primary focus-ring w-full sm:w-auto" type="button" onClick={parseLoop}>
+              <RefreshCw size={15} />
+              Parse evidence
+            </button>
+          </Panel>
+
+          <Panel eyebrow="03" title="Publish" marker>
+            <p className="ll-muted-copy">
+              Publish only after the timeline looks right and sensitive details have been removed.
+            </p>
+            {sensitiveWarnings.length > 0 && (
+              <div className="border border-[#b98338] bg-[#fff8e1] p-3">
+                <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--warning)]">
+                  <ShieldAlert size={15} />
+                  Review warnings
+                </div>
+                <ul className="mt-2 grid gap-1 text-sm leading-6 text-[var(--muted)]">
+                  {sensitiveWarnings.map((warning) => (
+                    <li key={warning.label}>{warning.detail}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <label className="flex items-start gap-3 text-sm leading-6 text-[var(--muted)]">
+              <input
+                className="mt-1 h-4 w-4 rounded-none accent-[var(--forest)]"
+                checked={redactionAccepted}
+                type="checkbox"
+                onChange={(event) => setRedactionAccepted(event.target.checked)}
+              />
+              <span>I reviewed this report for secrets, tokens, private URLs, customer data, internal notes, and sensitive logs.</span>
+            </label>
+            <button
+              className="ll-button-secondary focus-ring w-full sm:w-auto"
+              type="button"
+              disabled={publishState.loading}
+              onClick={publish}
+            >
+              <Rocket size={15} />
+              {publishState.loading ? "Publishing" : "Publish report"}
+            </button>
+            {publishState.error && (
+              <p className="border border-[#d08a9b] bg-[#fff1f4] p-3 text-sm leading-6 text-[var(--danger)]">
+                {publishState.error}
+              </p>
+            )}
+            {publishState.result && (
+              <a
+                className="focus-ring inline-flex min-w-0 items-center justify-between gap-3 rounded-[2px] border border-[var(--line)] bg-white px-3 py-2 text-sm text-[var(--forest)]"
+                href={publishState.result.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="truncate">{publishState.result.url}</span>
+                <ExternalLink size={14} />
+              </a>
+            )}
+          </Panel>
+        </section>
+
+        <section id="preview" className="min-w-0">
+          <div className="ll-grid-shell mb-4 grid gap-px border border-[var(--line)] lg:grid-cols-[1fr_260px]">
+            <div className="ll-grid-shell grid grid-cols-2 gap-px sm:grid-cols-4">
+              <ModeButton
+                active={activeMode === "timeline"}
+                index="01"
+                icon={<History size={16} />}
+                label="Timeline"
+                onClick={() => setActiveMode("timeline")}
+              />
+              <ModeButton
+                active={activeMode === "judge"}
+                index="02"
+                icon={<ShieldCheck size={16} />}
+                label="Judge"
+                onClick={() => setActiveMode("judge")}
+              />
+              <ModeButton
+                active={activeMode === "portfolio"}
+                index="03"
+                icon={<Save size={16} />}
+                label="Portfolio"
+                onClick={() => setActiveMode("portfolio")}
+              />
+              <ModeButton
+                active={activeMode === "markdown"}
+                index="04"
+                icon={<FileDown size={16} />}
+                label="Markdown"
+                onClick={() => setActiveMode("markdown")}
+              />
+            </div>
+            <div className="ll-grid-shell grid grid-cols-3 gap-px text-center">
+              <Metric label="Score" value={`${report.evidenceScore?.percentage ?? 0}%`} />
+              <Metric label="Loops" value={String(report.iterations.length)} />
+              <Metric label="Links" value={String(report.iterations.flatMap((iteration) => iteration.evidenceLinks).length)} />
+            </div>
           </div>
-        )}
-      </section>
-    </main>
+
+          {activeMode === "timeline" && (
+            <div className="grid gap-4">
+              <EvidenceScore report={report} />
+              <TimelineEditor report={report} onUpdateIteration={updateIteration} />
+            </div>
+          )}
+
+          {activeMode === "judge" && <ReportView report={report} />}
+
+          {activeMode === "portfolio" && (
+            <div className="grid gap-4">
+              <SummaryCard title="Portfolio Summary" content={report.summaries.find((summary) => summary.type === "portfolio")?.content} />
+              <SummaryCard title="Resume Bullets" content={report.summaries.find((summary) => summary.type === "resume")?.content} />
+              <SummaryCard title="Social Draft" content={report.summaries.find((summary) => summary.type === "social")?.content} />
+            </div>
+          )}
+
+          {activeMode === "markdown" && (
+            <div className="ll-surface p-4">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-3">
+                <div>
+                  <p className="font-mono-tech text-[10px] text-[var(--muted)]">04. Export</p>
+                  <h2 className="font-display mt-1 text-2xl font-bold text-[var(--forest)]">Markdown Export</h2>
+                </div>
+                <button
+                  className="ll-button-ghost focus-ring"
+                  type="button"
+                  onClick={copyMarkdown}
+                >
+                  <Clipboard size={15} />
+                  Copy
+                </button>
+              </div>
+              <textarea
+                className="ll-input focus-ring min-h-[520px] resize-y font-mono"
+                readOnly
+                value={markdown}
+              />
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
   );
 }
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+function TechnicalHeader({ onPreviewMode }: { onPreviewMode: (mode: PreviewMode) => void }) {
   return (
-    <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-4 shadow-sm">
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--teal)]">{title}</h2>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-[var(--line)] bg-[#F7F7F5]">
+      <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 lg:grid-cols-[260px_1fr_auto] lg:px-8">
+        <Link className="focus-ring flex min-w-0 items-center gap-3" href="/" aria-label="LoopLens home">
+          <span className="ll-logo-mark">
+            <Sparkles size={16} />
+          </span>
+          <span className="font-display text-xl font-bold leading-none text-[var(--forest)]">LoopLens</span>
+        </Link>
+
+        <nav className="hidden items-center justify-center gap-6 md:flex" aria-label="Workspace sections">
+          <a className="font-mono-tech text-[10px] text-[var(--muted)] hover:text-[var(--forest)]" href="#workspace">
+            01. Workspace
+          </a>
+          <a className="font-mono-tech text-[10px] text-[var(--muted)] hover:text-[var(--forest)]" href="#preview">
+            02. Preview
+          </a>
+          <a className="font-mono-tech text-[10px] text-[var(--muted)] hover:text-[var(--forest)]" href="#publish">
+            03. Publish
+          </a>
+        </nav>
+
+        <div className="flex items-center justify-end gap-2">
+          <Link
+            className="ll-button-ghost focus-ring hidden min-h-9 px-3 text-[10px] sm:inline-flex"
+            href="/sample"
+          >
+            Sample
+          </Link>
+          <button
+            className="ll-button-primary focus-ring min-h-9 px-3 text-[10px]"
+            type="button"
+            onClick={() => onPreviewMode("judge")}
+          >
+            Preview
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function Panel({
+  eyebrow,
+  title,
+  children,
+  marker = false
+}: {
+  eyebrow: string;
+  title: string;
+  children: React.ReactNode;
+  marker?: boolean;
+}) {
+  return (
+    <section
+      id={title === "Publish" ? "publish" : undefined}
+      className={`ll-surface p-4 ${marker ? "corner-markers" : ""}`}
+    >
+      {marker && <span className="corner-marker" aria-hidden="true" />}
+      <div className="mb-3 flex items-center justify-between gap-3 border-b border-[var(--line)] pb-3">
+        <h2 className="font-mono-tech text-[11px] text-[var(--forest)]">
+          {eyebrow}. {title}
+        </h2>
+        <span className="h-px flex-1" style={{ background: "var(--line)" }} aria-hidden="true" />
+      </div>
       <div className="grid gap-3">{children}</div>
     </section>
   );
@@ -338,23 +458,27 @@ function Field({
   label,
   value,
   onChange,
-  textarea = false
+  textarea = false,
+  placeholder
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   textarea?: boolean;
+  placeholder?: string;
 }) {
-  const sharedClass =
-    "focus-ring w-full rounded-[8px] border border-[var(--line)] bg-white px-3 py-2 text-sm leading-6";
-
   return (
-    <label className="grid gap-1 text-sm font-medium text-[var(--ink)]">
-      {label}
+    <label className="grid gap-1.5">
+      <span className="ll-label">{label}</span>
       {textarea ? (
-        <textarea className={`${sharedClass} min-h-24 resize-y`} value={value} onChange={(event) => onChange(event.target.value)} />
+        <textarea
+          className="ll-input focus-ring min-h-24 resize-y"
+          value={value}
+          placeholder={placeholder}
+          onChange={(event) => onChange(event.target.value)}
+        />
       ) : (
-        <input className={sharedClass} value={value} onChange={(event) => onChange(event.target.value)} />
+        <input className="ll-input focus-ring" value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
       )}
     </label>
   );
@@ -363,59 +487,106 @@ function Field({
 function ModeButton({
   active,
   icon,
+  index,
   label,
   onClick
 }: {
   active: boolean;
   icon: React.ReactNode;
+  index: string;
   label: string;
   onClick: () => void;
 }) {
   return (
     <button
-      className={`focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] px-3 py-2 text-sm font-semibold ${
-        active ? "bg-[var(--teal)] text-white" : "border border-[var(--line)] text-[var(--muted)]"
-      }`}
+      aria-label={label}
+      data-active={active}
+      className="ll-mode-button focus-ring inline-flex items-center justify-center gap-2 rounded-none px-3 py-2"
       type="button"
       onClick={onClick}
     >
       {icon}
-      {label}
+      <span className="hidden sm:inline">
+        {index}. {label}
+      </span>
+      <span className="sm:hidden">{label}</span>
     </button>
   );
 }
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-xs uppercase tracking-wide text-[var(--muted)]">{label}</p>
-      <p className="text-lg font-bold">{value}</p>
+    <div className="ll-paper px-3 py-2">
+      <p className="font-mono-tech text-[10px] text-[var(--muted)]">{label}</p>
+      <p className="font-display mt-1 text-2xl font-bold leading-none text-[var(--forest)]">{value}</p>
+    </div>
+  );
+}
+
+function StatusBadge({ label }: { label: string }) {
+  return (
+    <span className="ll-badge">
+      <span className="ll-badge-dot" aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
+
+function WorkflowSteps() {
+  const steps = [
+    ["01", "Project links"],
+    ["02", "Parse LOOP.md"],
+    ["03", "Publish proof"]
+  ];
+
+  return (
+    <div className="ll-grid-shell mt-5 grid gap-px border border-[var(--line)] sm:grid-cols-3">
+      {steps.map(([index, label]) => (
+        <div key={index} className="ll-paper p-3">
+          <p className="font-mono-tech text-[10px] text-[var(--muted)]">{index}</p>
+          <p className="mt-1 text-sm font-semibold text-[var(--forest)]">{label}</p>
+        </div>
+      ))}
     </div>
   );
 }
 
 function EvidenceScore({ report }: { report: ProjectReport }) {
+  const percentage = report.evidenceScore?.percentage ?? 0;
+  const passed = report.evidenceScore?.passed ?? 0;
+  const total = report.evidenceScore?.total ?? 0;
+
   return (
-    <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-4">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <section className="ll-surface">
+      <div className="grid gap-5 p-5 md:grid-cols-[1fr_160px]">
         <div>
-          <h2 className="text-xl font-semibold">Evidence Completeness</h2>
-          <p className="text-sm text-[var(--muted)]">
-            {report.evidenceScore?.passed ?? 0} of {report.evidenceScore?.total ?? 0} signals present
+          <p className="font-mono-tech text-[10px] text-[var(--muted)]">01. Evidence Matrix</p>
+          <h2 className="font-display mt-2 text-3xl font-bold leading-none text-[var(--forest)]">Evidence Completeness</h2>
+          <p className="ll-muted-copy mt-3">
+            {passed} of {total} required proof signals are present. Add project links, parse LOOP.md, then publish when the report is safe.
           </p>
         </div>
-        <strong className="text-3xl text-[var(--teal)]">{report.evidenceScore?.percentage ?? 0}%</strong>
+        <div className="flex flex-col justify-center">
+          <strong className="font-display text-5xl font-bold leading-none text-[var(--forest)]">{percentage}%</strong>
+          <div className="ll-progress mt-3" aria-hidden="true">
+            <div className="ll-progress-bar" style={{ width: `${percentage}%` }} />
+          </div>
+        </div>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
-        {report.evidenceScore?.items.map((item) => (
+      <div className="grid border-t border-[var(--line)] sm:grid-cols-2">
+        {report.evidenceScore?.items.map((item, index) => (
           <div
             key={item.id}
-            className={`rounded-[8px] border px-3 py-2 text-sm ${
-              item.passed ? "border-[#a8d7c6] bg-[#f0faf6]" : "border-[var(--line)] bg-[#fbfcfa]"
-            }`}
+            className={`border-b border-r border-[var(--line)] bg-[#F7F7F5] p-4 ${accentClasses[index % accentClasses.length]}`}
           >
-            <p className="font-semibold">{item.label}</p>
-            <p className="mt-1 truncate text-[var(--muted)]">{item.detail}</p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="font-mono-tech text-[10px] text-[var(--forest)]">{item.label}</p>
+              <span
+                className={`h-2 w-2 shrink-0 ${item.passed ? "bg-[#1A3C2B]" : "border border-[var(--line-strong)] bg-white"}`}
+                aria-hidden="true"
+              />
+            </div>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{item.detail}</p>
           </div>
         ))}
       </div>
@@ -432,22 +603,27 @@ function TimelineEditor({
 }) {
   if (report.iterations.length === 0) {
     return (
-      <section className="rounded-[8px] border border-dashed border-[var(--line)] bg-[var(--panel)] p-8 text-center">
-        <History className="mx-auto text-[var(--teal)]" size={28} />
-        <h2 className="mt-3 text-xl font-semibold">No timeline yet</h2>
-        <p className="mt-2 text-sm text-[var(--muted)]">Paste `LOOP.md` evidence and parse it.</p>
+      <section className="ll-surface border-dashed p-8 text-center">
+        <History className="mx-auto text-[var(--forest)]" size={28} />
+        <h2 className="font-display mt-3 text-3xl font-bold text-[var(--forest)]">No timeline yet</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">
+          Paste `LOOP.md` evidence in step 02 and click Parse evidence. Aim for at least two iterations and one fixed failure for a stronger proof story.
+        </p>
       </section>
     );
   }
 
   return (
-    <section className="grid gap-4">
-      {report.iterations.map((iteration) => (
-        <div key={iteration.id} className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-4 shadow-sm">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-[var(--teal)]">Iteration {iteration.index}</p>
+    <section className="ll-grid-shell grid gap-px border border-[var(--line)]">
+      {report.iterations.map((iteration, index) => (
+        <div key={iteration.id} className="ll-paper p-4">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-3">
+            <div className={`border-l-2 pl-3 ${accentClasses[index % accentClasses.length]}`}>
+              <p className="font-mono-tech text-[10px] text-[var(--muted)]">Iteration {iteration.index}</p>
+              <h3 className="font-display mt-1 text-2xl font-bold leading-none text-[var(--forest)]">{iteration.title}</h3>
+            </div>
             <select
-              className="focus-ring rounded-[8px] border border-[var(--line)] bg-white px-3 py-2 text-sm capitalize"
+              className="focus-ring min-h-10 rounded-[2px] border border-[var(--line)] bg-white px-3 py-2 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--ink)]"
               value={iteration.status}
               onChange={(event) => onUpdateIteration(iteration.id, { status: event.target.value as IterationStatus })}
             >
@@ -486,16 +662,18 @@ function TimelineEditor({
                 textarea
               />
             </div>
-            <div className="rounded-[8px] bg-[#f5f3ee] p-3 text-sm leading-6 text-[var(--muted)]">{iteration.sourceText}</div>
+            <div className="border border-[var(--line)] bg-white p-3 font-mono text-xs leading-6 text-[var(--muted)]">
+              {iteration.sourceText}
+            </div>
             {iteration.evidenceLinks.length > 0 && (
-              <div className="grid gap-2">
+              <div className="ll-grid-shell grid gap-px border border-[var(--line)]">
                 {iteration.evidenceLinks.map((link) => (
                   <a
                     key={link.id}
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="focus-ring inline-flex min-w-0 items-center justify-between gap-3 rounded-[8px] border border-[var(--line)] px-3 py-2 text-sm text-[var(--teal)]"
+                    className="ll-paper focus-ring inline-flex min-w-0 items-center justify-between gap-3 px-3 py-2 text-sm text-[var(--forest)]"
                   >
                     <span className="flex min-w-0 items-center gap-2 truncate">
                       <LinkIcon size={14} />
@@ -524,15 +702,13 @@ function EditField({
   onChange: (value: string) => void;
   textarea?: boolean;
 }) {
-  const className = "focus-ring w-full rounded-[8px] border border-[var(--line)] bg-white px-3 py-2 text-sm leading-6";
-
   return (
-    <label className="grid gap-1 text-sm font-medium">
-      {label}
+    <label className="grid gap-1.5">
+      <span className="ll-label">{label}</span>
       {textarea ? (
-        <textarea className={`${className} min-h-24 resize-y`} value={value} onChange={(event) => onChange(event.target.value)} />
+        <textarea className="ll-input focus-ring min-h-24 resize-y" value={value} onChange={(event) => onChange(event.target.value)} />
       ) : (
-        <input className={className} value={value} onChange={(event) => onChange(event.target.value)} />
+        <input className="ll-input focus-ring" value={value} onChange={(event) => onChange(event.target.value)} />
       )}
     </label>
   );
@@ -540,9 +716,12 @@ function EditField({
 
 function SummaryCard({ title, content }: { title: string; content?: string }) {
   return (
-    <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-5">
-      <h2 className="text-xl font-semibold">{title}</h2>
-      <div className="mt-3 whitespace-pre-line text-sm leading-7 text-[var(--muted)]">{content || "No summary generated yet."}</div>
+    <section className="ll-surface p-5">
+      <p className="font-mono-tech text-[10px] text-[var(--muted)]">Portfolio Surface</p>
+      <h2 className="font-display mt-1 text-3xl font-bold leading-none text-[var(--forest)]">{title}</h2>
+      <div className="mt-4 whitespace-pre-line border-l border-[var(--line)] pl-4 text-sm leading-7 text-[var(--muted)]">
+        {content || "No summary generated yet."}
+      </div>
     </section>
   );
 }

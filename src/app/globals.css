@@ -1,17 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8faf7;
-  --foreground: #17201b;
-  --muted: #657268;
-  --line: #d8dfd9;
-  --panel: #ffffff;
-  --panel-strong: #edf6f2;
-  --teal: #0f766e;
-  --teal-dark: #115e59;
-  --rose: #be123c;
-  --amber: #b45309;
-  --ink: #17201b;
+  --paper: #f7f7f5;
+  --paper-rgb: 247 247 245;
+  --forest: #1a3c2b;
+  --forest-rgb: 26 60 43;
+  --grid: #3a3a38;
+  --grid-rgb: 58 58 56;
+  --coral: #ff8c69;
+  --mint: #9effbf;
+  --gold: #f4d35e;
+  --white: #ffffff;
+  --ink: #161714;
+  --muted: #62635e;
+  --danger: #9f1d35;
+  --warning: #815f00;
+  --line: rgb(var(--grid-rgb) / 18%);
+  --line-strong: rgb(var(--grid-rgb) / 34%);
+  --panel: var(--paper);
+  --panel-strong: #ededeb;
+  --teal: var(--forest);
+  --teal-dark: #10291d;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --font-display: "Space Grotesk", "General Sans", "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "General Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 * {
@@ -21,17 +35,19 @@
 html {
   background: var(--background);
   color: var(--foreground);
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(237, 246, 242, 0.9), rgba(248, 250, 247, 0.96) 280px),
-    var(--background);
+  background-color: var(--background);
+  background-image: url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F7F7F5' stroke='%233A3A38' stroke-opacity='.3' stroke-width='.5'%3E%3Crect x='0' y='0' width='88' height='72'/%3E%3Crect x='88' y='0' width='132' height='34'/%3E%3Crect x='88' y='34' width='52' height='94'/%3E%3Crect x='140' y='34' width='80' height='62'/%3E%3Crect x='0' y='72' width='44' height='148'/%3E%3Crect x='44' y='72' width='44' height='56'/%3E%3Crect x='44' y='128' width='96' height='92'/%3E%3Crect x='140' y='96' width='38' height='124'/%3E%3Crect x='178' y='96' width='42' height='48'/%3E%3Crect x='178' y='144' width='42' height='76'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 220px 220px;
   color: var(--foreground);
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -45,7 +61,292 @@ select {
   font: inherit;
 }
 
+button,
+input,
+textarea,
+select,
+a {
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    color 150ms ease-out,
+    opacity 150ms ease-out;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: var(--mint);
+  color: var(--ink);
+}
+
 .focus-ring:focus-visible {
-  outline: 3px solid rgba(15, 118, 110, 0.28);
+  outline: 2px solid rgb(var(--forest-rgb) / 70%);
   outline-offset: 2px;
+}
+
+.ll-page-shell {
+  background:
+    linear-gradient(180deg, rgb(var(--paper-rgb) / 96%), rgb(var(--paper-rgb) / 88%)),
+    var(--background);
+}
+
+.ll-surface {
+  border: 1px solid var(--line);
+  background: rgb(var(--paper-rgb) / 96%);
+}
+
+.ll-surface-white {
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.ll-paper {
+  background: var(--paper);
+}
+
+.ll-grid-shell {
+  background: var(--line-strong);
+}
+
+.ll-logo-mark {
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--forest);
+  color: #fff;
+}
+
+.ll-button-primary,
+.ll-button-secondary,
+.ll-button-ghost {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 2px;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ll-button-primary {
+  border: 1px solid var(--forest);
+  background: var(--forest);
+  color: #fff;
+}
+
+.ll-button-primary:hover {
+  background: #10291d;
+  border-color: #10291d;
+}
+
+.ll-button-secondary {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+.ll-button-secondary:hover {
+  background: #000;
+  border-color: #000;
+}
+
+.ll-button-ghost {
+  border: 1px solid var(--line);
+  background: rgb(255 255 255 / 68%);
+  color: var(--forest);
+}
+
+.ll-button-ghost:hover {
+  border-color: var(--forest);
+  background: #fff;
+}
+
+.ll-button-primary:disabled,
+.ll-button-secondary:disabled,
+.ll-button-ghost:disabled {
+  opacity: 0.48;
+}
+
+.ll-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgb(var(--forest-rgb) / 24%);
+  background: rgb(255 255 255 / 70%);
+  padding: 0.25rem 0.75rem;
+  color: var(--forest);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.ll-badge-dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  flex-shrink: 0;
+  background: var(--forest);
+}
+
+.ll-mode-button {
+  min-height: 3rem;
+  background: rgb(var(--paper-rgb) / 96%);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ll-mode-button:hover {
+  color: var(--forest);
+  background: #fff;
+}
+
+.ll-mode-button[data-active="true"] {
+  background: var(--forest);
+  color: #fff;
+}
+
+.ll-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fff;
+  padding: 0.625rem 0.75rem;
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.ll-input::placeholder {
+  color: rgb(var(--grid-rgb) / 46%);
+}
+
+.ll-label {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ll-muted-copy {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.ll-progress {
+  height: 0.5rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.ll-progress-bar {
+  height: 100%;
+  background: var(--forest);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.technical-rule {
+  border-color: var(--line);
+}
+
+.corner-markers {
+  position: relative;
+}
+
+.corner-markers::before,
+.corner-markers::after,
+.corner-markers > .corner-marker::before,
+.corner-markers > .corner-marker::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+
+.corner-markers::before {
+  left: -1px;
+  top: -1px;
+  border-left: 2px solid var(--forest);
+  border-top: 2px solid var(--forest);
+}
+
+.corner-markers::after {
+  right: -1px;
+  top: -1px;
+  border-right: 2px solid var(--forest);
+  border-top: 2px solid var(--forest);
+}
+
+.corner-markers > .corner-marker::before {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid var(--forest);
+  border-left: 2px solid var(--forest);
+}
+
+.corner-markers > .corner-marker::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid var(--forest);
+  border-bottom: 2px solid var(--forest);
+}
+
+.topology-orbit {
+  transform-origin: 50% 50%;
+  animation: topology-orbit 20s linear infinite;
+}
+
+@keyframes topology-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

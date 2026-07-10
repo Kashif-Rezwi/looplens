@@ -3,6 +3,8 @@ import type { ProjectReport } from "@/types/report";
 import { collectReportEvidence, countFixedFailures } from "@/lib/evidence";
 import { getSummary } from "@/lib/summaries";
 
+const proofAccentClasses = ["border-l-[#9EFFBF]", "border-l-[#FF8C69]", "border-l-[#F4D35E]", "border-l-[#1A3C2B]"];
+
 export function ReportView({ report }: { report: ProjectReport }) {
   const evidence = collectReportEvidence(report);
   const fixedFailureCount = countFixedFailures(report.iterations);
@@ -12,79 +14,98 @@ export function ReportView({ report }: { report: ProjectReport }) {
   const socialSummary = getSummary(report, "social")?.content;
 
   return (
-    <article className="flex flex-col gap-6">
-      <header className="grid gap-5 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-5 shadow-sm lg:grid-cols-[1.5fr_0.8fr]">
-        <div className="min-w-0">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--teal)]">LoopLens</p>
-          <h1 className="text-3xl font-bold text-[var(--ink)] sm:text-4xl">{report.name || "Untitled report"}</h1>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--muted)]">
-            {report.description || "No description provided."}
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {report.tags.map((tag) => (
-              <span key={tag} className="rounded-[8px] border border-[var(--line)] px-3 py-1 text-sm text-[var(--muted)]">
-                {tag}
-              </span>
-            ))}
+    <article className="flex flex-col gap-5">
+      <header className="ll-surface">
+        <div className="ll-grid-shell grid gap-px lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="ll-paper p-5 sm:p-7">
+            <StatusBadge label={report.publishedAt ? "Public proof live" : "Draft proof surface"} />
+            <p className="font-mono-tech mt-6 text-[10px] text-[var(--muted)]">LoopLens / Proof Report</p>
+            <h1 className="font-display mt-3 max-w-3xl text-5xl font-bold leading-[0.95] tracking-normal text-[var(--forest)] sm:text-6xl">
+              {report.name || "Untitled report"}
+            </h1>
+            <p className="mt-5 max-w-3xl border-l border-[var(--forest)] pl-4 text-base leading-7 text-[var(--muted)] sm:text-lg">
+              {report.description || "No description provided."}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {report.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="border border-[var(--line)] bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--muted)]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="ll-grid-shell mt-6 grid gap-px border border-[var(--line)] sm:grid-cols-4">
+              <Metric label="Evidence completeness" value={`${report.evidenceScore?.percentage ?? 0}%`} />
+              <Metric label="Iterations" value={String(report.iterations.length)} />
+              <Metric label="Fixed failures" value={String(fixedFailureCount)} />
+              <Metric label="Published" value={report.publishedAt ? "Yes" : "No"} />
+            </div>
           </div>
-        </div>
-        <div className="grid gap-3 rounded-[8px] bg-[var(--panel-strong)] p-4">
-          <Metric label="Evidence completeness" value={`${report.evidenceScore?.percentage ?? 0}%`} />
-          <Metric label="Iterations" value={String(report.iterations.length)} />
-          <Metric label="Fixed failures" value={String(fixedFailureCount)} />
-          <Metric label="Published" value={report.publishedAt ? "Yes" : "No"} />
+
+          <div className="ll-paper flex items-center p-5">
+              <NetworkTopologyGraph />
+          </div>
         </div>
       </header>
 
       <ProofChain report={report} fixedFailureCount={fixedFailureCount} />
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <SummaryBlock icon={<ShieldCheck size={18} />} title="Judge Mode" content={judgeSummary} />
-        <SummaryBlock icon={<FileCheck2 size={18} />} title="Portfolio Mode" content={portfolioSummary} />
+        <SummaryBlock icon={<ShieldCheck size={18} />} index="01" title="Judge Mode" content={judgeSummary} accent="coral" />
+        <SummaryBlock icon={<FileCheck2 size={18} />} index="02" title="Portfolio Mode" content={portfolioSummary} accent="mint" />
       </section>
 
-      <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-5">
-        <div className="mb-4 flex items-center gap-2">
-          <History size={18} className="text-[var(--teal)]" />
-          <h2 className="text-xl font-semibold">Timeline</h2>
+      <section className="ll-surface">
+        <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] p-5">
+          <div className="flex items-center gap-2">
+            <History size={18} className="text-[var(--forest)]" />
+            <h2 className="font-display text-3xl font-bold leading-none text-[var(--forest)]">Timeline</h2>
+          </div>
+          <span className="font-mono-tech text-[10px] text-[var(--muted)]">{report.iterations.length} loops</span>
         </div>
-        <div className="grid gap-4">
-          {report.iterations.map((iteration) => (
-            <div key={iteration.id} className="rounded-[8px] border border-[var(--line)] p-4">
+        <div className="ll-grid-shell grid gap-px p-px">
+          {report.iterations.map((iteration, index) => (
+            <div key={iteration.id} className="ll-paper p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-[var(--teal)]">Iteration {iteration.index}</p>
-                  <h3 className="mt-1 text-lg font-semibold">{iteration.title}</h3>
+                <div className={`border-l-2 pl-3 ${proofAccentClasses[index % proofAccentClasses.length]}`}>
+                  <p className="font-mono-tech text-[10px] text-[var(--muted)]">Iteration {iteration.index}</p>
+                  <h3 className="font-display mt-1 max-w-4xl text-2xl font-bold leading-tight text-[var(--forest)]">{iteration.title}</h3>
                 </div>
-                <span className="rounded-[8px] bg-[var(--panel-strong)] px-3 py-1 text-sm font-semibold capitalize text-[var(--teal-dark)]">
-                  {iteration.status}
-                </span>
+                <StatusBadge label={iteration.status} />
               </div>
-              <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+              <dl className="ll-grid-shell mt-5 grid gap-px text-sm sm:grid-cols-2">
                 <Fact label="Built/changed" value={iteration.makerAction} />
                 <Fact label="Verified" value={iteration.checkerAction} />
                 <Fact label="Failure found" value={iteration.failureFound || "None recorded"} />
                 <Fact label="Fix applied" value={iteration.fixApplied || "None recorded"} />
               </dl>
-              <p className="mt-4 rounded-[8px] bg-[#f5f3ee] p-3 text-sm leading-6 text-[var(--muted)]">
-                {iteration.sourceText}
-              </p>
+              <details className="mt-4 border border-[var(--line)] bg-white">
+                <summary className="cursor-pointer px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--forest)]">
+                  Raw source evidence
+                </summary>
+                <p className="border-t border-[var(--line)] p-3 font-mono text-xs leading-6 text-[var(--muted)]">{iteration.sourceText}</p>
+              </details>
             </div>
           ))}
         </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-        <SummaryBlock icon={<FileCheck2 size={18} />} title="Resume Bullets" content={resumeSummary} />
-        <SummaryBlock icon={<FileCheck2 size={18} />} title="Social Draft" content={socialSummary} />
+        <SummaryBlock icon={<FileCheck2 size={18} />} index="03" title="Resume Bullets" content={resumeSummary} accent="gold" />
+        <SummaryBlock icon={<FileCheck2 size={18} />} index="04" title="Social Draft" content={socialSummary} accent="forest" />
       </section>
 
-      <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-5">
-        <div className="mb-4 flex items-center gap-2">
-          <LinkIcon size={18} className="text-[var(--teal)]" />
-          <h2 className="text-xl font-semibold">Evidence Links</h2>
+      <section className="ll-surface">
+        <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] p-5">
+          <div className="flex items-center gap-2">
+            <LinkIcon size={18} className="text-[var(--forest)]" />
+            <h2 className="font-display text-3xl font-bold leading-none text-[var(--forest)]">Evidence Links</h2>
+          </div>
+          <span className="font-mono-tech text-[10px] text-[var(--muted)]">{evidence.length} refs</span>
         </div>
-        <div className="grid gap-2">
+        <div className="ll-grid-shell grid gap-px p-px">
           {evidence.length ? (
             evidence.map((link) => (
               <a
@@ -92,17 +113,17 @@ export function ReportView({ report }: { report: ProjectReport }) {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="focus-ring flex min-w-0 items-center justify-between gap-3 rounded-[8px] border border-[var(--line)] px-3 py-2 text-sm"
+                className="ll-paper focus-ring flex min-w-0 items-center justify-between gap-3 px-4 py-3 text-sm"
               >
-                <span className="min-w-0 truncate">{link.label}</span>
-                <span className="flex shrink-0 items-center gap-2 text-[var(--teal)]">
+                <span className="min-w-0 truncate text-[var(--ink)]">{link.label}</span>
+                <span className="flex shrink-0 items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--forest)]">
                   {link.type}
                   <ExternalLink size={14} />
                 </span>
               </a>
             ))
           ) : (
-            <p className="text-sm text-[var(--muted)]">No evidence links yet.</p>
+            <p className="ll-paper p-4 text-sm text-[var(--muted)]">No evidence links yet.</p>
           )}
         </div>
       </section>
@@ -145,17 +166,17 @@ function ProofChain({ report, fixedFailureCount }: { report: ProjectReport; fixe
   ];
 
   return (
-    <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-4" aria-label="Proof chain">
-      <div className="grid gap-3 sm:grid-cols-4">
-        {items.map((item) => (
-          <div key={item.label} className={`rounded-[8px] border px-3 py-3 ${proofChainToneClass(item.tone)}`}>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-white/80 text-current">
+    <section className="ll-grid-shell border border-[var(--line)] p-px" aria-label="Proof chain">
+      <div className="grid gap-px sm:grid-cols-4">
+        {items.map((item, index) => (
+          <div key={item.label} className={`ll-paper border-l-2 p-4 ${proofAccentClasses[index % proofAccentClasses.length]}`}>
+            <div className={`flex items-center gap-2 ${proofChainToneClass(item.tone)}`}>
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center border border-current bg-white text-current">
                 {item.icon}
               </span>
-              <span className="text-sm font-semibold">{item.label}</span>
+              <span className="font-mono-tech text-[10px]">{item.label}</span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{item.value}</p>
+            <p className="mt-4 text-sm leading-6 text-[var(--muted)]">{item.value}</p>
           </div>
         ))}
       </div>
@@ -164,9 +185,9 @@ function ProofChain({ report, fixedFailureCount }: { report: ProjectReport; fixe
 }
 
 function proofChainToneClass(tone: ProofChainTone) {
-  if (tone === "complete") return "border-[#a8d7c6] bg-[#f0faf6] text-[var(--teal-dark)]";
-  if (tone === "warning") return "border-[#f3c17b] bg-[#fff8ed] text-[var(--amber)]";
-  return "border-[var(--line)] bg-[#fbfcfa] text-[var(--muted)]";
+  if (tone === "complete") return "text-[var(--forest)]";
+  if (tone === "warning") return "text-[var(--warning)]";
+  return "text-[var(--muted)]";
 }
 
 function formatCount(count: number, noun: string) {
@@ -175,32 +196,83 @@ function formatCount(count: number, noun: string) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
-      <span className="text-sm text-[var(--muted)]">{label}</span>
-      <strong className="text-lg">{value}</strong>
+    <div className="ll-paper p-4">
+      <span className="font-mono-tech text-[10px] text-[var(--muted)]">{label}</span>
+      <strong className="font-display mt-2 block text-3xl font-bold leading-none text-[var(--forest)]">{value}</strong>
     </div>
   );
 }
 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <dt className="font-semibold text-[var(--ink)]">{label}</dt>
-      <dd className="mt-1 leading-6 text-[var(--muted)]">{value || "Not specified"}</dd>
+    <div className="ll-paper p-3">
+      <dt className="font-mono-tech text-[10px] text-[var(--forest)]">{label}</dt>
+      <dd className="mt-2 leading-6 text-[var(--muted)]">{value || "Not specified"}</dd>
     </div>
   );
 }
 
-function SummaryBlock({ icon, title, content }: { icon: React.ReactNode; title: string; content?: string }) {
+function SummaryBlock({
+  icon,
+  index,
+  title,
+  content,
+  accent
+}: {
+  icon: React.ReactNode;
+  index: string;
+  title: string;
+  content?: string;
+  accent: "coral" | "mint" | "gold" | "forest";
+}) {
   return (
-    <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-5">
-      <div className="mb-3 flex items-center gap-2 text-[var(--teal)]">
-        {icon}
-        <h2 className="text-xl font-semibold text-[var(--ink)]">{title}</h2>
+    <section className={`ll-surface border-l-2 p-5 ${summaryAccentClass(accent)}`}>
+      <div className="mb-4 flex items-center justify-between gap-3 border-b border-[var(--line)] pb-3 text-[var(--forest)]">
+        <div className="flex items-center gap-2">
+          {icon}
+          <h2 className="font-display text-2xl font-bold leading-none text-[var(--forest)]">{title}</h2>
+        </div>
+        <span className="font-mono-tech text-[10px] text-[var(--muted)]">{index}</span>
       </div>
-      <div className="whitespace-pre-line text-sm leading-7 text-[var(--muted)]">
-        {content || "No summary generated yet."}
-      </div>
+      <div className="whitespace-pre-line text-sm leading-7 text-[var(--muted)]">{content || "No summary generated yet."}</div>
     </section>
+  );
+}
+
+function summaryAccentClass(accent: "coral" | "mint" | "gold" | "forest") {
+  if (accent === "coral") return "border-l-[#FF8C69]";
+  if (accent === "mint") return "border-l-[#9EFFBF]";
+  if (accent === "gold") return "border-l-[#F4D35E]";
+  return "border-l-[#1A3C2B]";
+}
+
+function StatusBadge({ label }: { label: string }) {
+  return (
+    <span className="ll-badge">
+      <span className="ll-badge-dot" aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
+
+function NetworkTopologyGraph() {
+  return (
+    <div className="mx-auto aspect-square w-full max-w-[300px] border border-[var(--line)] bg-white p-4" aria-hidden="true">
+      <svg className="h-full w-full" viewBox="0 0 450 450" role="img">
+        <circle cx="225" cy="225" r="140" fill="none" stroke="var(--grid)" strokeDasharray="5 8" strokeOpacity="0.32" />
+        <circle cx="225" cy="225" r="88" fill="none" stroke="var(--grid)" strokeDasharray="2 10" strokeOpacity="0.24" />
+        <g className="topology-orbit">
+          <line x1="225" y1="225" x2="225" y2="85" stroke="var(--grid)" strokeOpacity="0.2" />
+          <line x1="225" y1="225" x2="346" y2="295" stroke="var(--grid)" strokeOpacity="0.2" />
+          <line x1="225" y1="225" x2="104" y2="295" stroke="var(--grid)" strokeOpacity="0.2" />
+          <rect x="217" y="77" width="16" height="16" fill="var(--coral)" />
+          <rect x="338" y="287" width="16" height="16" fill="var(--mint)" />
+          <rect x="96" y="287" width="16" height="16" fill="var(--gold)" />
+        </g>
+        <rect x="217" y="217" width="16" height="16" fill="var(--forest)" />
+        <path d="M145 164h42v-28h76v28h42" fill="none" stroke="var(--grid)" strokeOpacity="0.28" />
+        <path d="M145 286h42v28h76v-28h42" fill="none" stroke="var(--grid)" strokeOpacity="0.28" />
+      </svg>
+    </div>
   );
 }
