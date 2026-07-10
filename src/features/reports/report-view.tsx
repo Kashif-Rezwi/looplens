@@ -1,10 +1,11 @@
-import { ExternalLink, FileCheck2, History, Link as LinkIcon, ShieldCheck } from "lucide-react";
+import { Bug, ExternalLink, FileCheck2, History, Link as LinkIcon, Share2, ShieldCheck, Wrench } from "lucide-react";
 import type { ProjectReport } from "@/types/report";
 import { collectReportEvidence, countFixedFailures } from "@/lib/evidence";
 import { getSummary } from "@/lib/summaries";
 
 export function ReportView({ report }: { report: ProjectReport }) {
   const evidence = collectReportEvidence(report);
+  const fixedFailureCount = countFixedFailures(report.iterations);
   const judgeSummary = getSummary(report, "judge")?.content;
   const portfolioSummary = getSummary(report, "portfolio")?.content;
   const resumeSummary = getSummary(report, "resume")?.content;
@@ -30,10 +31,12 @@ export function ReportView({ report }: { report: ProjectReport }) {
         <div className="grid gap-3 rounded-[8px] bg-[var(--panel-strong)] p-4">
           <Metric label="Evidence completeness" value={`${report.evidenceScore?.percentage ?? 0}%`} />
           <Metric label="Iterations" value={String(report.iterations.length)} />
-          <Metric label="Fixed failures" value={String(countFixedFailures(report.iterations))} />
+          <Metric label="Fixed failures" value={String(fixedFailureCount)} />
           <Metric label="Published" value={report.publishedAt ? "Yes" : "No"} />
         </div>
       </header>
+
+      <ProofChain report={report} fixedFailureCount={fixedFailureCount} />
 
       <section className="grid gap-4 lg:grid-cols-2">
         <SummaryBlock icon={<ShieldCheck size={18} />} title="Judge Mode" content={judgeSummary} />
@@ -105,6 +108,69 @@ export function ReportView({ report }: { report: ProjectReport }) {
       </section>
     </article>
   );
+}
+
+type ProofChainTone = "complete" | "warning" | "muted";
+
+function ProofChain({ report, fixedFailureCount }: { report: ProjectReport; fixedFailureCount: number }) {
+  const failureSignalCount = report.iterations.filter(
+    (iteration) => iteration.failureFound.trim() || iteration.fixApplied.trim() || iteration.status === "failed" || iteration.status === "fixed"
+  ).length;
+
+  const items: Array<{ label: string; value: string; icon: React.ReactNode; tone: ProofChainTone }> = [
+    {
+      label: "Build",
+      value: formatCount(report.iterations.length, "loop"),
+      icon: <History size={17} />,
+      tone: report.iterations.length > 0 ? "complete" : "muted"
+    },
+    {
+      label: "Catch",
+      value: failureSignalCount > 0 ? formatCount(failureSignalCount, "finding") : "No findings yet",
+      icon: <Bug size={17} />,
+      tone: failureSignalCount > 0 ? "warning" : "muted"
+    },
+    {
+      label: "Fix",
+      value: fixedFailureCount > 0 ? `${fixedFailureCount} fixed` : "No fixes yet",
+      icon: <Wrench size={17} />,
+      tone: fixedFailureCount > 0 ? "complete" : "muted"
+    },
+    {
+      label: "Publish",
+      value: report.publishedAt ? "Public proof live" : "Draft only",
+      icon: <Share2 size={17} />,
+      tone: report.publishedAt ? "complete" : "muted"
+    }
+  ];
+
+  return (
+    <section className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-4" aria-label="Proof chain">
+      <div className="grid gap-3 sm:grid-cols-4">
+        {items.map((item) => (
+          <div key={item.label} className={`rounded-[8px] border px-3 py-3 ${proofChainToneClass(item.tone)}`}>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-white/80 text-current">
+                {item.icon}
+              </span>
+              <span className="text-sm font-semibold">{item.label}</span>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function proofChainToneClass(tone: ProofChainTone) {
+  if (tone === "complete") return "border-[#a8d7c6] bg-[#f0faf6] text-[var(--teal-dark)]";
+  if (tone === "warning") return "border-[#f3c17b] bg-[#fff8ed] text-[var(--amber)]";
+  return "border-[var(--line)] bg-[#fbfcfa] text-[var(--muted)]";
+}
+
+function formatCount(count: number, noun: string) {
+  return `${count} ${noun}${count === 1 ? "" : "s"}`;
 }
 
 function Metric({ label, value }: { label: string; value: string }) {
