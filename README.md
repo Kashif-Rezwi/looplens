@@ -2,6 +2,8 @@
 
 LoopLens is a proof-of-work dashboard for AI-assisted software projects. It turns `LOOP.md`, TestSprite evidence, repo links, live app links, and development notes into a shareable engineering timeline.
 
+Built for TestSprite Hackathon Season 3, LoopLens turns TestSprite runs and `LOOP.md` evidence into a public proof report that shows the write, verify, fix, and verify-again loop.
+
 ## Purpose
 
 This README is the public entry point for humans reviewing the repository. It should explain what LoopLens is, why it exists, how the project is organized, and how to evaluate the hackathon build.
@@ -18,7 +20,21 @@ Live app: https://looplens-rho.vercel.app
 Final LoopLens self-report: https://looplens-rho.vercel.app/report/looplens-687aa5cd
 ```
 
-The final self-report was published from the real [`LOOP.md`](./LOOP.md) and is the primary public proof artifact for the project. It shows 8 recorded engineering iterations, 5 fixed failures, production publish evidence, and the final TestSprite verification harness fix.
+The final self-report was published from the real [`LOOP.md`](./LOOP.md) and is the primary public proof artifact for the project. It shows recorded engineering iterations, fixed-failure evidence, production publish evidence, and the final TestSprite verification harness fix.
+
+## Screenshots
+
+### Self-Report Hero
+
+![LoopLens public self-report hero showing evidence completeness, iteration count, fixed failures, publish status, and proof chain](./public/screenshots/public-report.png)
+
+### Workspace Timeline
+
+![LoopLens workspace timeline showing parsed LOOP.md iterations and evidence completeness](./public/screenshots/workspace-timeline.png)
+
+### Judge Mode
+
+![LoopLens Judge Mode summarizing iterations, fixed failures, and evidence completeness](./public/screenshots/judge-mode.png)
 
 Implemented:
 
@@ -50,7 +66,7 @@ TestSprite CLI was run against the live production app at `https://looplens-rho.
 
 - TestSprite project: `4e162386-3ee6-4e2e-ab59-bf76171bd96c`
 - Test ID: `ee18a802-38ec-4575-b640-a13e6ebbadbb`
-- Final passed run ID: `2c84f4dc-d493-45ec-81fa-c52fb9870d45`
+- Final passed run ID: `a235ee61-9fd0-4449-b55d-f764457617ad`
 - Final result: `16/16` steps passed, `0` failed
 - Dashboard: https://www.testsprite.com/dashboard/tests/4e162386-3ee6-4e2e-ab59-bf76171bd96c/test/ee18a802-38ec-4575-b640-a13e6ebbadbb
 

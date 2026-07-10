@@ -1,17 +1,20 @@
 {
-  "runId": "2c84f4dc-d493-45ec-81fa-c52fb9870d45",
+  "runId": "a235ee61-9fd0-4449-b55d-f764457617ad",
   "testId": "ee18a802-38ec-4575-b640-a13e6ebbadbb",
   "projectId": "4e162386-3ee6-4e2e-ab59-bf76171bd96c",
+  "userId": "74a8f478-3071-70c2-102f-8ddf5fd06a0b",
   "status": "passed",
   "source": "cli",
-  "createdAt": "2026-07-09T06:27:51.655Z",
-  "startedAt": "2026-07-09T06:27:51.701877+00:00",
-  "finishedAt": "2026-07-09T06:27:57.514Z",
+  "createdAt": "2026-07-10T02:19:47.268Z",
+  "startedAt": "2026-07-10T02:19:47.326654+00:00",
+  "finishedAt": "2026-07-10T02:19:52.215Z",
   "codeVersion": "v3",
   "targetUrl": "https://looplens-rho.vercel.app",
-  "createdFrom": "rerun:6d17abce-420a-4df2-8f9f-6138eef389fa",
+  "createdFrom": "rerun:2c84f4dc-d493-45ec-81fa-c52fb9870d45",
   "failedStepIndex": null,
   "failureKind": null,
+  "videoUrl": null,
+  "error": "",
   "stepSummary": {
     "total": 16,
     "completed": 16,
@@ -22,6 +25,6 @@
   "notes": [
     "Initial strict test run 6d17abce-420a-4df2-8f9f-6138eef389fa returned blocked because TestSprite regenerated brittle code and marked two text verification steps failed despite observing the expected public report state.",
     "The deterministic v3 code was restored with testsprite test code put, verified with testsprite test code get, and replayed with --no-auto-heal.",
-    "The final replay passed against the production URL with no failed or blocked steps."
+    "The final replay passed against the updated production URL with no failed or blocked steps."
   ]
 }

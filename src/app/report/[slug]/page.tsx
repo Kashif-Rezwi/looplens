@@ -16,12 +16,13 @@ export default async function ReportPage({ params }: ReportPageProps) {
   if (!report) notFound();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-4">
-        <Link className="focus-ring rounded-[8px] px-3 py-2 text-sm font-semibold text-[var(--teal)]" href="/">
+    <main className="ll-page-shell mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
+      <div className="ll-surface flex flex-wrap items-center justify-between gap-3 p-3">
+        <Link className="ll-button-ghost focus-ring min-h-9 px-3 text-[10px]" href="/">
           Create another report
         </Link>
-        <span className="rounded-[8px] bg-[var(--panel-strong)] px-3 py-2 text-sm font-medium text-[var(--teal-dark)]">
+        <span className="ll-badge">
+          <span className="ll-badge-dot" aria-hidden="true" />
           Public report
         </span>
       </div>

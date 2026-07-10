@@ -21,18 +21,36 @@ test("user creates, parses, publishes, opens, and exports a report", async ({ pa
   await page.getByLabel("Live app URL").fill("https://playwright-proof.example.com");
   await page.getByLabel("TestSprite URL").fill("https://www.testsprite.com/discover");
   await page.getByPlaceholder("YYYY-MM-DD").fill(sampleLoop);
+
+  await expect(page.getByRole("button", { name: "Publish report" })).toBeDisabled();
+
   await page.getByRole("button", { name: "Parse evidence" }).click();
 
+  await expect(page.getByRole("heading", { name: /Iteration 1: Built metadata form/ })).toBeVisible();
   await expect(page.getByLabel("Built/changed").first()).toHaveValue(/Built metadata form/);
-  await expect(page.locator("textarea").filter({ hasText: "Added redaction checklist" }).first()).toBeVisible();
+  await expect(page.getByLabel("Fix applied").last()).toHaveValue(/Added redaction checklist/);
 
   await page.getByRole("button", { name: "Judge" }).click();
+  await expect(page.getByText("Evidence score", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Reviewer Proof Brief" })).toBeVisible();
+  const metricBeforeBrief = await page.evaluate(() => {
+    const metric = Array.from(document.querySelectorAll("*")).find((node) => node.textContent === "Evidence score");
+    const brief = Array.from(document.querySelectorAll("h2")).find((node) => node.textContent === "Reviewer Proof Brief");
+    return Boolean(metric && brief && (metric.compareDocumentPosition(brief) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(metricBeforeBrief).toBe(true);
   await expect(page.getByText("Playwright Proof includes 2 recorded engineering iterations")).toBeVisible();
 
   await page.getByRole("button", { name: "Markdown" }).click();
+  await expect(page.getByRole("heading", { name: "Shareable Report" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Playwright Proof" })).toBeVisible();
   await expect(page.locator("textarea").last()).toHaveValue(/# Playwright Proof/);
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(page.url()).origin });
+  await page.getByRole("button", { name: "Copy" }).click();
+  await expect(page.getByText("Copied", { exact: true })).toBeVisible();
 
   await page.getByLabel(/I reviewed this report/).check();
+  await expect(page.getByRole("button", { name: "Publish report" })).toBeEnabled();
   await page.getByRole("button", { name: "Publish report" }).click();
 
   const publicLink = page.getByRole("link", { name: /localhost:3000\/report\// });
